@@ -1,13 +1,12 @@
-import type { Route } from "./+types/home";
-import { Welcome } from "../welcome/welcome";
-
-export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
-  ];
-}
+import React, { Suspense } from 'react';
+const Header = React.lazy(() => import('../components/Header/Header'));
 
 export default function Home() {
-  return <Welcome />;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Header />
+      <main style={{ padding: '1rem' }}>
+      </main>
+    </Suspense>
+  );
 }
