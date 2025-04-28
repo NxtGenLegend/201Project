@@ -5,7 +5,43 @@ import React, { Suspense, useState } from 'react';
 const Header = React.lazy(() => import('../components/Header/Header'));
 const GroupCard = React.lazy(() => import('../components/GroupCard/GroupCard'));
 
+// TODO: fetch data from backend inside a useEffect
+
 export default function Home() {
+  // TODO: replace dummy data with actual data from database
+  const dummyGroups = [
+    {
+      groupImage: "/assets/default-group.png",
+      groupName: "Code Ninjas",
+      classCode: "CSCI 104",
+      className: "Data Structures and Object Oriented Design",
+      meetingDayTime: "Monday @ 5PM",
+      meetingType: "In Person",
+      memberCount: 5,
+      groupLead: "Tommy Trojan",
+    },
+    {
+      groupImage: "/assets/default-group.png",
+      groupName: "Algo Warriors",
+      classCode: "CSCI 270",
+      className: "Introduction to Algorithms and Theory of Computing",
+      meetingDayTime: "Wednesday @ 3PM",
+      meetingType: "Virtual",
+      memberCount: 8,
+      groupLead: "John Doe",
+    },
+    {
+      groupImage: "/assets/default-group.png",
+      groupName: "Software Engineers",
+      classCode: "CSCI 201",
+      className: "Principles of Software Development",
+      meetingDayTime: "Thursday @ 6PM",
+      meetingType: "In Person",
+      memberCount: 6,
+      groupLead: "John Smith",
+    }
+  ];
+
   // add state to control search input
   const [searchValue, setSearchValue] = useState('');
   // states to control filter status
@@ -73,18 +109,22 @@ export default function Home() {
         {/* group cards */}
         <div className="group-cards-wrapper">
           <div className="group-cards-container">
-            <GroupCard
-              groupImage="/assets/default-group.png"
-              groupName="Study Buddies"
-              classCode="CSCI 104"
-              className="Data Structures and Object Oriented Design"
-              meetingDayTime="Monday @ 5PM"
-              meetingType="In Person"
-              memberCount={5}
-              groupLead="Tommy Trojan"
-            />
+            {dummyGroups.map((group, index) => (
+              <GroupCard
+                key={index}
+                groupImage={group.groupImage}
+                groupName={group.groupName}
+                classCode={group.classCode}
+                className={group.className}
+                meetingDayTime={group.meetingDayTime}
+                meetingType={group.meetingType}
+                memberCount={group.memberCount}
+                groupLead={group.groupLead}
+              />
+            ))}
           </div>
         </div>
+
       </main>
     </Suspense>
   );
