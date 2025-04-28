@@ -37,7 +37,7 @@ export default function Home() {
       meetingDayTime: "Wednesday @ 3PM",
       meetingType: "Virtual",
       memberCount: 8,
-      groupLead: "John Doe",
+      groupLead: "Jane Doe",
     },
     {
       groupImage: "/assets/default-group.png",
@@ -54,15 +54,25 @@ export default function Home() {
   // add state to control search input
   const [searchValue, setSearchValue] = useState('');
 
-  // array to store search results
-  const filteredGroups = dummyGroups.filter((group) =>
-    group.groupName.toLowerCase().includes(searchValue.toLowerCase())
-  );
-
   // states to control filter status
   const [selectedClass, setSelectedClass] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [selectedMeetingOption, setSelectedMeetingOption] = useState('');
+
+  // array to store search and filter results
+  const filteredGroups = dummyGroups.filter((group) => {
+    // groups with name that contains the searched term
+    let matchesSearch = (searchValue === '') || group.groupName.toLowerCase().includes(searchValue.toLowerCase());
+    // groups with the exact same class code as selected
+    let matchesClass = (selectedClass === '') || (group.classCode === selectedClass);
+    // groups with the same meeting time as selected
+    let matchesTime = (selectedTime === '') || group.meetingDayTime.toLowerCase().includes(selectedTime.toLowerCase());
+    // groups with the exact same meeting option as selected
+    let matchesMeetingOption = (selectedMeetingOption === '') || (group.meetingType.toLowerCase() === selectedMeetingOption.toLowerCase());
+
+    // only return results that match ALL criteria
+    return matchesSearch && matchesClass && matchesTime && matchesMeetingOption;
+  });
 
   return (
     <Suspense fallback={<div>Loading...</div>}>

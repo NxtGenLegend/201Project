@@ -39,7 +39,7 @@
 
 .group-cards-wrapper {
     display: flex;
-    justify-content: center; /* center the container itself */
+    justify-content: center;
     width: 100%;
 }
 
