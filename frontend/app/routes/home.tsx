@@ -1,7 +1,9 @@
 import '../styles/Home.css';
 import React, { Suspense, useState } from 'react';
 
+// import ui components
 const Header = React.lazy(() => import('../components/Header/Header'));
+const GroupCard = React.lazy(() => import('../components/GroupCard/GroupCard'));
 
 export default function Home() {
   // add state to control search input
@@ -15,8 +17,8 @@ export default function Home() {
     <Suspense fallback={<div>Loading...</div>}>
       <Header />
       <main style={{ padding: '1rem' }}>
+        {/* search bar */}
         <div className="search-container">
-          {/* search bar */}
           <input
             type="text"
             value={searchValue}
@@ -67,6 +69,21 @@ export default function Home() {
             <option value="In Person">In Person</option>
             <option value="Virtual">Virtual</option>
           </select>
+        </div>
+        {/* group cards */}
+        <div className="group-cards-wrapper">
+          <div className="group-cards-container">
+            <GroupCard
+              groupImage="/assets/default-group.png"
+              groupName="Study Buddies"
+              classCode="CSCI 104"
+              className="Data Structures and Object Oriented Design"
+              meetingDayTime="Monday @ 5PM"
+              meetingType="In Person"
+              memberCount={5}
+              groupLead="Tommy Trojan"
+            />
+          </div>
         </div>
       </main>
     </Suspense>
