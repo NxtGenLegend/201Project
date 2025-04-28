@@ -6,19 +6,28 @@ const Header = React.lazy(() => import('../components/Header/Header'));
 const GroupCard = React.lazy(() => import('../components/GroupCard/GroupCard'));
 
 // TODO: fetch data from backend inside a useEffect
-
 export default function Home() {
   // TODO: replace dummy data with actual data from database
   const dummyGroups = [
     {
       groupImage: "/assets/default-group.png",
-      groupName: "Code Ninjas",
+      groupName: "The Debug Squad",
       classCode: "CSCI 104",
       className: "Data Structures and Object Oriented Design",
       meetingDayTime: "Monday @ 5PM",
       meetingType: "In Person",
       memberCount: 5,
       groupLead: "Tommy Trojan",
+    },
+    {
+      groupImage: "/assets/default-group.png",
+      groupName: "Algorithmic Avengers",
+      classCode: "CSCI 270",
+      className: "Introduction to Algorithms and Theory of Computing",
+      meetingDayTime: "Wednesday @ 3PM",
+      meetingType: "Virtual",
+      memberCount: 8,
+      groupLead: "John Doe",
     },
     {
       groupImage: "/assets/default-group.png",
@@ -44,6 +53,12 @@ export default function Home() {
 
   // add state to control search input
   const [searchValue, setSearchValue] = useState('');
+
+  // array to store search results
+  const filteredGroups = dummyGroups.filter((group) =>
+    group.groupName.toLowerCase().includes(searchValue.toLowerCase())
+  );
+
   // states to control filter status
   const [selectedClass, setSelectedClass] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
@@ -109,7 +124,7 @@ export default function Home() {
         {/* group cards */}
         <div className="group-cards-wrapper">
           <div className="group-cards-container">
-            {dummyGroups.map((group, index) => (
+            {filteredGroups.map((group, index) => (
               <GroupCard
                 key={index}
                 groupImage={group.groupImage}
