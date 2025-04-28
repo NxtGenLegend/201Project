@@ -1,0 +1,56 @@
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem;
+    background-color: white;
+    border-bottom: 1px solid #ddd;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.usc-logo {
+    height: 32px;
+    margin-right: 12px;
+}
+
+.header-center {
+    display: flex;
+    gap: 16px;
+}
+
+.header-tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background-color: transparent;
+    border: none;
+    position: relative;
+    cursor: pointer;
+}
+
+.header-tab.selected {
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+}
+
+.unread-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #990000;
+    border-radius: 50%;
+    position: absolute;
+    top: 4px;
+    right: 0px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
