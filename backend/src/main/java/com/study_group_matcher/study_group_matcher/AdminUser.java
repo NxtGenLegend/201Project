@@ -3,6 +3,7 @@ package com.study_group_matcher.study_group_matcher;
 import java.util.ArrayList;
 import java.util.List;
 import jakarta.persistence.*;
+import com.study_group_matcher.study_group_matcher.Role;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "user_id")
@@ -15,6 +16,11 @@ public class AdminUser extends User {
         this.setRole(Role.ADMIN);
     }
     
+    private void setRole(Role admin) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setRole'");
+    }
+
     // Original Admin Methods
     public StudyGroup createGroup(String name, String course) {
         StudyGroup group = new StudyGroup(name, course, this);
