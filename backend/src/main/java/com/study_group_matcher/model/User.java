@@ -3,6 +3,7 @@ package com.study_group_matcher.model;
 import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
+import java.time.LocalDateTime;
 
 public class User {
     public User(int id, String p, String f, String l, String d){
@@ -14,9 +15,10 @@ public class User {
         messages = new ArrayList<>();
         studyGroups = new ArrayList<>();
         inbox = new Inbox;
+        lastLoginTime = LocalDateTime.now();
     }
     public User(){
-        
+
     }
     public int getUser_id(){
         return user_id;
@@ -64,10 +66,16 @@ public class User {
     public Inbox setInbox(Inbox i){
         inbox = i;
     }
+    public LocalDateTime getLastLoginTime(){
+        return lastLoginTime;
+    }
+    public void setLastLoginTime(LocalDateTime t){
+        lastLoginTime = t;
+    }
 
     private
     int user_id;
-    int lastLoginTime;
+    LocalDateTime lastLoginTime;
     String password;
     String firstName;
     String lastName;
