@@ -3,7 +3,6 @@ package com.study_group_matcher.model;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class AdminUser extends User {
     public AdminUser(){
 
