@@ -1,4 +1,4 @@
-package com.study_group_matcher.study_group_matcher;
+package com.study_group_matcher;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

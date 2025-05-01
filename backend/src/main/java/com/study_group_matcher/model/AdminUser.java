@@ -1,9 +1,11 @@
-package com.study_group_matcher.study_group_matcher;
+package com.study_group_matcher.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.study_group_matcher.model.Role;
+
 import jakarta.persistence.*;
-import com.study_group_matcher.study_group_matcher.Role;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "user_id")

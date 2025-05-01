@@ -1,4 +1,4 @@
-package com.study_group_matcher.study_group_matcher;
+package com.study_group_matcher.model;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
