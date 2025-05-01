@@ -1,106 +1,81 @@
 package com.study_group_matcher.model;
 
-import jakarta.persistence.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
 
-@Entity
-@Table(name = "Users")
-@Inheritance(strategy = InheritanceType.JOINED)
-public class User implements UserDetails {
-    
-    // Original Attributes
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
-    
-    @Column(nullable = false, unique = true)
-    private String username;
-    
-    @Column(nullable = false)
-    private String password;
-    
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
-    
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
-    
-    private String displayName;
-    
-    @OneToMany(mappedBy = "sender")
-    private List<Message> messages = new ArrayList<>();
-    
-    @OneToMany(mappedBy = "user")
-    private List<StudyGroupMembership> studyGroups = new ArrayList<>();
-    
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Inbox inbox;
-    
-    // Security Addition
-    @Enumerated(EnumType.STRING)
-    private Role role = Role.USER;
+public class User {
+    public User(int id, String p, String f, String l, String d){
+        user_id = id;
+        password = p;
+        firstName = f;
+        lastName = l;
+        displayName = d;
+        messages = new ArrayList<>();
+        studyGroups = new ArrayList<>();
+        inbox = new Inbox;
+    }
+    public User(){
+        
+    }
+    public int getUser_id(){
+        return user_id;
 
-    // Original Methods
-    public void joinGroup(StudyGroup group) {
-        StudyGroupMembership membership = new StudyGroupMembership(this, group);
-        studyGroups.add(membership);
     }
-    
-    public void leaveGroup(StudyGroup group) {
-        studyGroups.removeIf(m -> m.getStudyGroup().equals(group));
+    public void setUser_id(int id){
+        user_id = id;
     }
-    
-    public void sendMessage(Message message) {
-        message.setSender(this);
-        messages.add(message);
-    }
-    
-    // Security Methods (implements UserDetails)
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
-    }
-
-    @Override
-    public String getPassword() {
+    public String getPassword(){
         return password;
     }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPassword(String p){
+        password = p;
+    }
+    public String getFirstName(){
+        return firstName;
+    }
+    public void setFirstName(String f){
+        firstName = f;
+    }
+    public String getLastName(){
+        return lastName;
+    }
+    public void setLastName(String l){
+        lastName = l;
+    }
+    public String getDisplayName(){
+        return displayName;
+    }
+    public void setDisplayName(String d){
+        displayName = d;
+    }
+    public List<Message> getMessages(){
+        return messages;
+    }
+    public List<Message> setMessages(List<Message> m){
+        messages = m;
+    }
+    public List<StudyGroup> getStudyGroups(){
+        return studyGroups;
+    }
+    public Inbox getInbox(){
+        return inbox;
+    }
+    public Inbox setInbox(Inbox i){
+        inbox = i;
     }
 
-    @Override
-    public String getUsername() {
-        return username;
-    }
+    private
+    int user_id;
+    int lastLoginTime;
+    String password;
+    String firstName;
+    String lastName;
+    String displayName;
+    List<Message> messages;
+    List<StudyGroup> studyGroups;
+    Inbox inbox;
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }
