@@ -1,9 +1,12 @@
 import React, { Suspense, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
 
 const Header = React.lazy(() => import("../components/Header/Header"));
 
 export default function Login() {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -12,6 +15,10 @@ export default function Login() {
     // Handle login logic here
     console.log("Email:", email);
     console.log("Password:", password);
+    //Assuming success
+    localStorage.setItem('email', email);
+    localStorage.setItem('isLoggedIn', "true");
+    navigate('/dashboard');
   };
 
   return (
