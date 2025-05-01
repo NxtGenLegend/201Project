@@ -1,12 +1,17 @@
 package com.study_group_matcher.model;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.*;
 import org.mindrot.jbcrypt.BCrypt;
+
 
 public class UserDBHelper {
     public UserDBHelper(){
         connection = JDBCUtil.getConnection();
+    }
+    public UserDBHelper(Connection c){
+        connection = c;
     }
     /**
      * Adds a user to a study group
@@ -47,14 +52,17 @@ public class UserDBHelper {
      * @throws SQLException if database error occurs
      */
     public void insertUser(User curr) throws SQLException {
-        String sql = "INSERT INTO Users (username, password, first_name, last_name) " +
-                     "VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Users (username, password, first_name, last_name, last_login_time) " +
+                     "VALUES (?, ?, ?, ?, ?)";
         String hashedPass = hashPassword(curr.getPassword());
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            LocalDateTime loginTime = curr.getLastLoginTime();
+            String stringLogin = loginTime.toString();
             stmt.setString(1, curr.getDisplayName());
             stmt.setString(2, hashedPass); 
             stmt.setString(3, curr.getFirstName());
             stmt.setString(4, curr.getLastName());
+            stmt.setString(5, stringLogin);
             stmt.executeUpdate();
             
             // Get the generated user ID
