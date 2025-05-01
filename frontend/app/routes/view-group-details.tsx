@@ -25,7 +25,10 @@ export default function ViewStudyGroupDetails() {
     imageUrl: "/assets/default-group.png",
     time: "18:00", // 6:00 PM
     meetinPreference: "zoom", 
-    numOfMembers: "8"
+    numOfMembers: "8",
+    nameOfMembers: ["John Doe", "Helen Doe", "Lara Doe"], 
+    memberMajors: ["Computer Science and Business Adminstration", "Arts", "Computer Science"],
+    memberYears: ["Freshman", "Freshman", "Freshman"]
   });
 
   useEffect(() => {
@@ -49,14 +52,22 @@ export default function ViewStudyGroupDetails() {
       {/* Group image with overlay text */}
       <div className="group-banner">
         <img
-          alt="default group"
-          className="group-image"
-          src={groupData.imageUrl}
+            alt="default group"
+            className="group-image"
+            src="assets/usc_banner.jpeg"
         />
         <div className="group-banner-text">
           <h1><b>{groupData.name}</b></h1>
           <p>{groupData.course}</p>
+          {/* TODO: Update logic so admin can see send request and User can send Request to Join */}
+           {/*Add Join/Request Button */}
+            <div className="group-banner-buttons">
+                <button className="banner-button">Request to Join</button>
+                <button className="banner-button">Send Request</button>
+            </div>
         </div>
+        
+       
       </div>
 
       {/* Displays details */}
@@ -89,6 +100,20 @@ export default function ViewStudyGroupDetails() {
         {/* Right: Group Members */}
         <div className="group-members-container">
           <b>Group Members</b>
+            <div>
+            {groupData.nameOfMembers.map((name, idx) => (
+                <div className="member-row" key={idx}>
+                    {/* <div> */}
+                    <div className="name-col">{name}</div>
+                    <div className='student-cont'>
+                        <div className="major-col">{groupData.memberMajors[idx]}</div>
+                        <div className="year-col">{groupData.memberYears[idx]}</div>
+                        </div>
+                    </div>
+   
+                ))}
+            </div>
+          
         </div>
       </div>
     </div>

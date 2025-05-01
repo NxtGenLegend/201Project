@@ -1,5 +1,5 @@
 body, html {
-    background-color: rgba(247, 247, 247, 0.859); /* or any other color you'd prefer */
+    background-color: rgba(247, 247, 247, 0.859);
     margin: 0;
     padding: 0;
     height: 100%;
@@ -46,7 +46,6 @@ body, html {
 }
 
 .group-details-container{
-    /* border: solid rgb(170, 160, 160) 2px;  */
     width: 300px; 
     border-radius: 13px; 
     padding-top: 20px;
@@ -55,11 +54,11 @@ body, html {
     margin-top: 10px;
     background-color: white;
     color: black; 
+    padding-right: 30px; 
 }
 
 .group-members-container{
-    /* border: solid rgb(170, 160, 160) 2px;  */
-    width: 500px; 
+    width: 900px; 
     border-radius: 13px; 
     padding-top: 20px;
     padding-left: 20px;
@@ -73,3 +72,82 @@ body, html {
     padding-top: 10px;
     
 }
+
+.member-row {
+    display: flex;
+    gap: 2rem;            
+    padding: 0.5rem 0;
+    align-items: center;
+}
+
+.major-col{
+    display: flex;
+    flex: 1;
+    gap: 2rem;          
+    padding: 0.5rem 0;
+    align-items: center;
+   
+    height: auto; 
+    width: 500px;
+    padding-left: 10px;
+    border-radius: 13px;
+    color: black; 
+    border: 2px solid #000080;
+    word-wrap: break-word;   
+}
+.year-col {
+    flex: 1 1 0;               
+    padding: 0.5rem 1rem;
+    border-radius: 13px;
+    border: 2px solid #770E04;
+    color: black;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-right: 30px;
+}
+  
+.member-col {
+    flex: 1;
+}
+
+.student-cont{
+    display: flex;
+    flex-direction: row;   
+    gap: 1rem;            
+    flex-wrap: wrap;      
+    align-items: flex-start;
+
+}
+.group-banner {
+    position: relative;
+    width: 100%;
+    height: 350px;
+    overflow: hidden;
+    margin-top: 50px;
+    background-color: white;
+    border-radius: 13px;
+  }
+  
+  .group-banner-buttons {
+    position: right;
+    top: 30px;
+    right: 40px;
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .banner-button {
+    background-color: #0047AB;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .banner-button:hover {
+    background-color: #5848c2;
+  }
