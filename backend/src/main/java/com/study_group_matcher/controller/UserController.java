@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/users")
@@ -22,6 +23,7 @@ public class UserController {
         String password = request.get("password");
         String firstName = request.get("first_name");
         String lastName = request.get("last_name");
+        LocalDateTime firstLogin = LocalDateTime.now();
         
         // Validation would need to be manual
         if (username == null || username.isBlank()) {
@@ -36,6 +38,7 @@ public class UserController {
             newUser.setPassword(password);
             newUser.setFirstName(firstName);
             newUser.setLastName(lastName);
+            newUser.setLastLoginTime(firstLogin);
             
             userDBHelper.insertUser(newUser);
             return ResponseEntity.ok("Registration successful");
@@ -47,12 +50,15 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<User> loginUser(@RequestBody Map<String, String> request) {
         String username = request.get("username");
+        String password = request.get("password");
         
         try (Connection conn = JDBCUtil.getConnection()) {
             UserDBHelper userDBHelper = new UserDBHelper(conn);
             User user = userDBHelper.getUserByUsername(username);
             
-            if (user != null) {
+            if (user != null && password == user.getPassword()) {
+                LocalDateTime loggedIn = LocalDateTime.now();
+                user.setLastLoginTime(loggedIn);
                 return ResponseEntity.ok(user);
             }
             return ResponseEntity.status(401).build();
@@ -61,4 +67,3 @@ public class UserController {
         }
     }
 }
-
