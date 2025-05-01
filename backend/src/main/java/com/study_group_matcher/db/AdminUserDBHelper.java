@@ -1,6 +1,8 @@
-package com.study_group_matcher.model;
+package com.study_group_matcher.db;
+
 import java.sql.*;
 import java.util.List;
+import com.study_group_matcher.model.User;
 
 public class AdminUserDBHelper extends UserDBHelper {
     public AdminUserDBHelper(){

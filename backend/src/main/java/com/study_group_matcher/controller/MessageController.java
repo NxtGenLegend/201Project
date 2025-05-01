@@ -1,6 +1,10 @@
+package com.study_group_matcher.controller;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import com.study_group_matcher.model.Message;
+import com.study_group_matcher.db.MessageDao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

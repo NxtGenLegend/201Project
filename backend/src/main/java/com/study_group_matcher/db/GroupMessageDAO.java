@@ -1,7 +1,10 @@
+package com.study_group_matcher.db;
+
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import com.study_group_matcher.model.GroupMessage;
 
 public class GroupMessageDAO {
     private final Connection conn;
