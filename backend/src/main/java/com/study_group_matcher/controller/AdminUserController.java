@@ -1,4 +1,4 @@
-package com.study_group_matcher.model;
+package com.study_group_matcher.controller;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
@@ -7,6 +7,12 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import com.study_group_matcher.model.User;
+import com.study_group_matcher.db.JDBCUtil;
+import com.study_group_matcher.db.UserDBHelper;
+import com.study_group_matcher.db.AdminUserDBHelper;
+import com.study_group_matcher.controller.UserController;
+import com.study_group_matcher.model.AdminUser;
 
 @RestController
 @RequestMapping("/api/admin")
