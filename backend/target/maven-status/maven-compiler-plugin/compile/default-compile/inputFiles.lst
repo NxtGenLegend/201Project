@@ -1,9 +1,12 @@
-C:\USC\Classes\Spring 2025\CSCI-201 Principles of Software Development\finalProject\201Project\backend\src\main\java\com\study_group_matcher\study_group_matcher\Message.java
-C:\USC\Classes\Spring 2025\CSCI-201 Principles of Software Development\finalProject\201Project\backend\src\main\java\com\study_group_matcher\study_group_matcher\User.java
-C:\USC\Classes\Spring 2025\CSCI-201 Principles of Software Development\finalProject\201Project\backend\src\main\java\com\study_group_matcher\study_group_matcher\Inbox.java
-C:\USC\Classes\Spring 2025\CSCI-201 Principles of Software Development\finalProject\201Project\backend\src\main\java\com\study_group_matcher\study_group_matcher\StudyGroupMembership.java
-C:\USC\Classes\Spring 2025\CSCI-201 Principles of Software Development\finalProject\201Project\backend\src\main\java\com\study_group_matcher\study_group_matcher\Role.java
-C:\USC\Classes\Spring 2025\CSCI-201 Principles of Software Development\finalProject\201Project\backend\src\main\java\com\study_group_matcher\study_group_matcher\StudyGroupMatcherApplication.java
-C:\USC\Classes\Spring 2025\CSCI-201 Principles of Software Development\finalProject\201Project\backend\src\main\java\com\study_group_matcher\study_group_matcher\AdminUser.java
-C:\USC\Classes\Spring 2025\CSCI-201 Principles of Software Development\finalProject\201Project\backend\src\main\java\com\study_group_matcher\study_group_matcher\SecurityConfig.java
-C:\USC\Classes\Spring 2025\CSCI-201 Principles of Software Development\finalProject\201Project\backend\src\main\java\com\study_group_matcher\study_group_matcher\StudyGroup.java
+/Users/jeremiahbruce/Desktop/CS201/201 Final Project/backend/src/main/java/com/study_group_matcher/study_group_matcher/User.java
+/Users/jeremiahbruce/Desktop/CS201/201 Final Project/backend/src/main/java/com/study_group_matcher/study_group_matcher/Inbox.java
+/Users/jeremiahbruce/Desktop/CS201/201 Final Project/backend/src/main/java/com/study_group_matcher/study_group_matcher/MeetingType.java
+/Users/jeremiahbruce/Desktop/CS201/201 Final Project/backend/src/main/java/com/study_group_matcher/study_group_matcher/Privacy.java
+/Users/jeremiahbruce/Desktop/CS201/201 Final Project/backend/src/main/java/com/study_group_matcher/study_group_matcher/AdminUser.java
+/Users/jeremiahbruce/Desktop/CS201/201 Final Project/backend/src/main/java/com/study_group_matcher/study_group_matcher/StudyGroupMatcherApplication.java
+/Users/jeremiahbruce/Desktop/CS201/201 Final Project/backend/src/main/java/com/study_group_matcher/study_group_matcher/Role.java
+/Users/jeremiahbruce/Desktop/CS201/201 Final Project/backend/src/main/java/com/study_group_matcher/study_group_matcher/Message.java
+/Users/jeremiahbruce/Desktop/CS201/201 Final Project/backend/src/main/java/com/study_group_matcher/study_group_matcher/SecurityConfig.java
+/Users/jeremiahbruce/Desktop/CS201/201 Final Project/backend/src/main/java/com/study_group_matcher/study_group_matcher/StudyGroup.java
+/Users/jeremiahbruce/Desktop/CS201/201 Final Project/backend/src/main/java/com/study_group_matcher/study_group_matcher/StudyGroupMembership.java
+/Users/jeremiahbruce/Desktop/CS201/201 Final Project/backend/src/main/java/com/study_group_matcher/study_group_matcher/Invitation.java
