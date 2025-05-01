@@ -1,3 +1,5 @@
+package com.study_group_matcher.model;
+
 import java.time.LocalDateTime;  
 public class Message {
     private int messageId;

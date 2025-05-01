@@ -1,3 +1,7 @@
+package com.study_group_matcher.db;
+
+import com.study_group_matcher.model.Message;
+
 import java.sql.*;
 import java.util.*;
 

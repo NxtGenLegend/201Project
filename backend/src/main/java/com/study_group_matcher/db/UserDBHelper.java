@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import org.mindrot.jbcrypt.BCrypt;
 import com.study_group_matcher.model.User;
-
+import com.study_group_matcher.model.Message;
 
 public class UserDBHelper {
     public UserDBHelper(){
