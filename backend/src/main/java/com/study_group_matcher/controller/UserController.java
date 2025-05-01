@@ -1,4 +1,4 @@
-package com.study_group_matcher.model;
+package com.study_group_matcher.controller;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -6,6 +6,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 import java.time.LocalDateTime;
+import com.study_group_matcher.model.User;
+import com.study_group_matcher.db.JDBCUtil;
+import com.study_group_matcher.db.UserDBHelper;
 
 @RestController
 @RequestMapping("/api/users")
