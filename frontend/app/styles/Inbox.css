@@ -1,0 +1,95 @@
+body {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.inbox-container {
+  flex: 1;
+  display: flex;
+  font-family: Arial, sans-serif;
+}
+
+.inbox-menu {
+  width: 25%;
+  background-color: #f5f5f5;
+  border-right: 1px solid #cccccc;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.inbox-menu h2 {
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
+  color: #333333;
+}
+
+.inbox-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.message-item {
+  padding: 0.75rem;
+  border-bottom: 1px solid #e0e0e0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.message-item:hover {
+  background-color: #eaeaea;
+}
+
+.message-item.unread {
+  font-weight: bold;
+  color: #000000;
+}
+
+.message-item.read {
+  font-weight: normal;
+  color: #000000;
+}
+
+.message-subject {
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.message-timestamp {
+  font-size: 0.8rem;
+  color: #666666;
+}
+
+.inbox-content {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  background-color: #ffffff;
+}
+
+.message-details {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: #000000;
+}
+
+.message-details h3 {
+  margin-top: 0;
+  font-size: 1.5rem;
+  color: #000000;
+}
+
+.message-details p {
+  margin: 0.5rem 0;
+  color: #000000;
+}
+
+.no-message-selected {
+  font-size: 1.2rem;
+  color: #666666;
+  text-align: center;
+  margin-top: 2rem;
+}

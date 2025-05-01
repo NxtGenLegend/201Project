@@ -5,8 +5,16 @@ import {
   Box,
 } from '@cloudscape-design/components';
 import { FiUser, FiHome, FiSearch, FiPlus, FiMessageCircle } from "react-icons/fi";
+import { useNavigate, useLocation } from 'react-router-dom';
 
-const Header = ({ userName = "Tommy Trojan", selectedTab = "Dashboard", hasUnread = true }) => {
+const Header = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const currentPath = location.pathname;
+
+  const email = localStorage.getItem('email') || '';
+  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
   return (
     <Box className="header-container">
       <div className="header-left">
@@ -16,32 +24,51 @@ const Header = ({ userName = "Tommy Trojan", selectedTab = "Dashboard", hasUnrea
 
       <div className="header-center">
         {/* TODO: change the onClick navigation once the page is done */}
-        <button onClick={() => { }} className={`header-tab ${selectedTab === 'Dashboard' ? 'selected' : ''}`}>
-          <FiHome /> Dashboard
-        </button>
-
-        <button onClick={() => { }} className={`header-tab ${selectedTab === 'Search Groups' ? 'selected' : ''}`}>
+        {
+          isLoggedIn ? (
+            <button onClick={() => {navigate('/dashboard')}} className={`header-tab ${currentPath === '/dashboard' ? 'selected' : ''}`}>
+              <FiHome /> Dashboard
+            </button>
+          ) : (
+            <></>
+          )
+        }
+        
+        <button onClick={() => {navigate('/')}} className={`header-tab ${currentPath === '/' ? 'selected' : ''}`}>
           <FiSearch /> Search Groups
         </button>
 
-        <button onClick={() => { }} className={`header-tab ${selectedTab === 'Create Group' ? 'selected' : ''}`} >
+        <button onClick={() => {navigate('/')}} className={`header-tab ${currentPath === '/create' ? 'selected' : ''}`} >
           <FiPlus /> Create Group
         </button>
 
-        <button onClick={() => { }} className={`header-tab ${selectedTab === 'Inbox' ? 'selected' : ''}`} >
+        <button onClick={() => {navigate('/inbox');}} className={`header-tab ${currentPath === '/inbox' ? 'selected' : ''}`} >
           <FiMessageCircle /> Inbox
-          {/* red dot appears if there's unread messages */}
-          {hasUnread && <span className="unread-dot" />} 
         </button>
       </div>
 
       <div className="header-right">
-        <FiUser />
-        <span>Hi, {userName}</span>
         {/* TODO: actually log user out once the backend is done */}
-        <Button onClick={() => alert("Logging out...")}>
-          Log out
-        </Button>
+        {
+          isLoggedIn ? (
+            <>
+              <FiUser />
+              <span>Hi, {email}</span>
+              <Button onClick={() => {localStorage.setItem('email', ""); localStorage.setItem('isLoggedIn', "false"); navigate("/");}}>
+                Log out
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button onClick={() => navigate('/login')}>
+                Log in
+              </Button>
+              <Button onClick={() => navigate('/register')}>
+                Register
+              </Button>
+            </>
+          )
+        }
       </div>
     </Box>
   );
