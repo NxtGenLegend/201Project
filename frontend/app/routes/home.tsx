@@ -10,7 +10,7 @@ export default function Home() {
   // TODO: replace dummy data with actual data from database
   const dummyGroups = [
     {
-      groupImage: "/assets/default-group.png",
+      groupImage: "/assets/default_group.png",
       groupName: "The Debug Squad",
       classCode: "CSCI 104",
       className: "Data Structures and Object Oriented Design",
@@ -20,7 +20,7 @@ export default function Home() {
       groupLead: "Tommy Trojan",
     },
     {
-      groupImage: "/assets/default-group.png",
+      groupImage: "/assets/default_group.png",
       groupName: "Algorithmic Avengers",
       classCode: "CSCI 270",
       className: "Introduction to Algorithms and Theory of Computing",
@@ -30,7 +30,7 @@ export default function Home() {
       groupLead: "John Doe",
     },
     {
-      groupImage: "/assets/default-group.png",
+      groupImage: "/assets/default_group.png",
       groupName: "Algo Warriors",
       classCode: "CSCI 270",
       className: "Introduction to Algorithms and Theory of Computing",
@@ -40,7 +40,7 @@ export default function Home() {
       groupLead: "Jane Doe",
     },
     {
-      groupImage: "/assets/default-group.png",
+      groupImage: "/assets/default_group.png",
       groupName: "Software Engineers",
       classCode: "CSCI 201",
       className: "Principles of Software Development",
