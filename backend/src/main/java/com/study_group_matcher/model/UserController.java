@@ -20,8 +20,8 @@ public class UserController {
     public ResponseEntity<String> registerUser(@RequestBody Map<String, String> request) {
         String username = request.get("username");
         String password = request.get("password");
-        String firstName = request.get("firstName");
-        String lastName = request.get("lastName");
+        String firstName = request.get("first_name");
+        String lastName = request.get("last_name");
         
         // Validation would need to be manual
         if (username == null || username.isBlank()) {
@@ -29,7 +29,7 @@ public class UserController {
         }
         
         try (Connection conn = JDBCUtil.getConnection()) {
-            UserDBHelper userDBHelper = new UserDBHelper();
+            UserDBHelper userDBHelper = new UserDBHelper(conn);
             
             User newUser = new User();
             newUser.setDisplayName(username);
@@ -49,7 +49,7 @@ public class UserController {
         String username = request.get("username");
         
         try (Connection conn = JDBCUtil.getConnection()) {
-            UserDBHelper userDBHelper = new UserDBHelper();
+            UserDBHelper userDBHelper = new UserDBHelper(conn);
             User user = userDBHelper.getUserByUsername(username);
             
             if (user != null) {
@@ -61,3 +61,4 @@ public class UserController {
         }
     }
 }
+
