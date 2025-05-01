@@ -4,6 +4,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
+import com.study_group_matcher.model.Message;
+import com.study_group_matcher.model.StudyGroup;
+import com.study_group_matcher.model.Inbox;
 
 public class User {
     public User(int id, String p, String f, String l, String d){
@@ -14,7 +17,7 @@ public class User {
         displayName = d;
         messages = new ArrayList<>();
         studyGroups = new ArrayList<>();
-        inbox = new Inbox;
+        inbox = new Inbox();
         lastLoginTime = LocalDateTime.now();
     }
     public User(){

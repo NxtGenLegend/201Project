@@ -7,10 +7,18 @@ import com.study_group_matcher.model.Inbox;
 
 public class InboxDBHelper {
 
+    private Connection conn;
+    public InboxDBHelper() {
+        this.conn = JDBCUtil.getConnection();
+    }
+
+    public InboxDBHelper(Connection conn) {
+        this.conn = conn;
+    }
+
     // Add a new inbox to the database 
     public void addInbox(Inbox inbox) {
         String query = "INSERT INTO Inbox (user_id, sender_id, message_id, invitation_id) VALUES (?, ?, ?, ?)";
-        Connection conn = null;
         PreparedStatement stmt = null;
 
         try {
