@@ -1,3 +1,4 @@
+package com.study_group_matcher.model;
 import java.sql.*;
 import java.util.List;
 
