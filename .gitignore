@@ -404,3 +404,6 @@ target/
 
 # VSCode
 .vscode/
+
+# Mac
+.DS_Store
