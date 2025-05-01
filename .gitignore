@@ -402,6 +402,7 @@ FodyWeavers.xsd
 # Spring Boot VSCode Nonsense
 target/
 **/target/
+backend/target/
 
 # VSCode
 .vscode/
