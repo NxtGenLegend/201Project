@@ -5,8 +5,13 @@ import {
   Box,
 } from '@cloudscape-design/components';
 import { FiUser, FiHome, FiSearch, FiPlus, FiMessageCircle } from "react-icons/fi";
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Header = ({ userName = "Tommy Trojan", selectedTab = "Dashboard", hasUnread = true }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const currentPath = location.pathname;
+
   return (
     <Box className="header-container">
       <div className="header-left">
@@ -16,19 +21,19 @@ const Header = ({ userName = "Tommy Trojan", selectedTab = "Dashboard", hasUnrea
 
       <div className="header-center">
         {/* TODO: change the onClick navigation once the page is done */}
-        <button onClick={() => { }} className={`header-tab ${selectedTab === 'Dashboard' ? 'selected' : ''}`}>
+        <button onClick={() => {navigate('/dashboard')}} className={`header-tab ${currentPath === '/dashboard' ? 'selected' : ''}`}>
           <FiHome /> Dashboard
         </button>
 
-        <button onClick={() => { }} className={`header-tab ${selectedTab === 'Search Groups' ? 'selected' : ''}`}>
+        <button onClick={() => {navigate('/')}} className={`header-tab ${currentPath === '/' ? 'selected' : ''}`}>
           <FiSearch /> Search Groups
         </button>
 
-        <button onClick={() => { }} className={`header-tab ${selectedTab === 'Create Group' ? 'selected' : ''}`} >
+        <button onClick={() => {navigate('/')}} className={`header-tab ${currentPath === '/create' ? 'selected' : ''}`} >
           <FiPlus /> Create Group
         </button>
 
-        <button onClick={() => { }} className={`header-tab ${selectedTab === 'Inbox' ? 'selected' : ''}`} >
+        <button onClick={() => {navigate('/inbox');}} className={`header-tab ${currentPath === '/inbox' ? 'selected' : ''}`} >
           <FiMessageCircle /> Inbox
           {/* red dot appears if there's unread messages */}
           {hasUnread && <span className="unread-dot" />} 

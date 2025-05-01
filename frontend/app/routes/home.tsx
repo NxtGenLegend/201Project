@@ -77,7 +77,7 @@ export default function Home() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <Header />
-      <main style={{ padding: '1rem' }}>
+      <main style={{ padding: '1rem', backgroundColor: "#f5f5f5" }}>
         {/* search bar */}
         <div className="search-container">
           <input

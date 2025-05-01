@@ -39,7 +39,7 @@ const Dashboard: React.FC = () => {
     return (
         <Suspense fallback={<div>Loading...</div>}>
             <Header />
-            <main style={{ padding: '1rem' }}>
+            <main style={{ padding: '1rem', backgroundColor: "#f5f5f5"}}>
                 <div className="banner-section">
                     <img src="/assets/usc_banner.jpeg" alt="USC Banner" className="banner-image" />
                     <div className="banner-overlay" />
