@@ -398,3 +398,12 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Spring Boot VSCode Nonsense
+target/
+
+# VSCode
+.vscode/
+
+# Mac
+.DS_Store
