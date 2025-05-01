@@ -1,0 +1,202 @@
+
+/* CSS File to style buttons and Study Creation Form */
+#form-container{
+    border: solid rgb(170, 160, 160) 2px; 
+    width: 700px; 
+    border-radius: 13px; 
+    padding-top: 20px;
+    padding-left: 20px;
+    padding-bottom: 20px;
+    margin-top: 10px;
+}
+
+.form-wrapper {
+    display: flex;
+  justify-content: center;
+  align-items: flex-start; 
+  min-height: 100vh; 
+  padding-top: 100px; 
+  padding-bottom: 40px;
+  background-color: #f7f7f7;
+  overflow-x: auto;
+}
+  
+#class-selection {
+    /* border: 2px solid #0047AB; */
+    border-radius: 13px;
+    height: 30px; 
+    width: 200px;
+    /* background-color: white; */
+    padding-left: 30px;
+    margin-top: 10px;
+    background-color: white;
+    appearance: none;           /* Normalize across browsers */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: 2px solid #0047AB;
+}
+
+#class-selection:focus{
+    border: 2px solid #0047AB;
+    background-color: white;
+    outline: none; 
+}
+
+
+#group-name-field{
+    /* border: 2px solid #0047AB; */
+    border-radius: 13px;
+    height: 30px; 
+    width: 350px;
+    padding-left: 10px;
+    background-color: #eae6e6;
+    margin-top: 10px;
+}
+
+#group-name-field:focus{
+    border: 2px solid #0047AB;
+    outline: none; 
+    background-color: white;
+}
+
+.choice-button {
+    border-radius: 13px;
+    width: auto; 
+    padding-left: 25px;
+    padding-right: 25px;
+    margin-top: 5px;
+
+    border: 2px solid #000080;
+    background-color: #e9f0f6;
+
+}
+
+.choice-button:hover {
+    background-color: #000080;
+    color: white !important; 
+}
+
+.choice-button:focus {
+    background-color: #000080;
+    color: white !important; 
+}
+
+
+
+#study-description-field {
+    width: 100%;
+    max-width: 500px;
+    height: 120px;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 13px;
+    background-color: #eae6e6;
+    margin-top: 10px;
+}
+
+#study-description-field:focus {
+    outline: none; 
+    border: 2px solid #0047AB;
+    background-color: white;
+}
+
+#meeting-date,
+#start-time,
+#end-time {
+  padding: 8px;
+  width: 180px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  outline:none; 
+  box-shadow: none;
+
+
+}
+
+#meeting-date:hover,
+#start-time:hover,
+#end-time:hover{
+    outline: none;
+
+    color: white; 
+    border: 2px solid #0047AB;
+
+}
+
+#meeting-date:focus,
+#start-time:focus, 
+#end-time:focus{
+    border: 2px solid #0047AB;
+
+    color: whitesmoke;
+}
+
+#invite-email{
+    padding: 10px;
+    width: 300px;
+    border-radius: 10px;
+    font-size: 16px;
+    outline:none; 
+    box-shadow: none;
+    margin-top: 10px;
+    border: 2px solid #0047AB;
+   
+}
+
+#invite-email:focus{
+    border: 2px solid #0047AB;
+    background-color: white;
+}
+
+.submit-button{
+    border: none;
+    border-radius: 13px;
+    width: auto; 
+    padding-left: 25px;
+    padding-right: 25px;
+    background-color: #800020; 
+    margin-top: 5px;
+    color: white !important; 
+    margin-top: 30px;
+    height: 30px; 
+}
+
+.submit-button:focus{
+    background-color: #900C3F;
+    border: solid 2px black; 
+}
+.submit-button:hover{
+    background-color: #900C3F;
+    border: solid 2px black; 
+}
+
+.clear-button {
+    border: none;
+    border-radius: 13px;
+    width: auto; 
+    height: 30px; 
+    padding-left: 25px;
+    padding-right: 25px;
+    background-color: #A9A9A9; 
+    margin-top: 5px;
+    color: white !important; 
+    margin-top: 30px;
+}
+.clear-button:focus{
+    background-color: #A9A9A9;
+    border: solid 2px black; 
+}
+.clear-button:hover{
+    background-color: #A9A9A9;
+    border: solid 2px black; 
+}
+
+#form-container,
+#form-container * {
+    opacity: 1 !important;
+    filter: none !important;
+    color:black; 
+    pointer-events: auto !important;
+}
