@@ -37,11 +37,9 @@ public class UserController {
             UserDBHelper userDBHelper = new UserDBHelper(conn);
             
             User newUser = new User();
-            newUser.setDisplayName(username);
             newUser.setPassword(password);
             newUser.setFirstName(firstName);
             newUser.setLastName(lastName);
-            newUser.setLastLoginTime(firstLogin);
             
             userDBHelper.insertUser(newUser);
             return ResponseEntity.ok("Registration successful");
@@ -61,7 +59,6 @@ public class UserController {
             
             if (user != null && password.equals(user.getPassword())) {
                 LocalDateTime loggedIn = LocalDateTime.now();
-                user.setLastLoginTime(loggedIn);
                 return ResponseEntity.ok(user);
             }
             return ResponseEntity.status(401).build();
