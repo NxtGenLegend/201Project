@@ -1,3 +1,5 @@
+package com.study_group_matcher.model;
+
 public class InboxDTO {
     private Long messageId;
     private Long invitationId;
