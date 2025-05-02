@@ -41,7 +41,6 @@ public class InvitationService {
                 dto.setRecipientId(rs.getLong("user_id"));
                 dto.setRecipientName(rs.getString("first_name") + " " + rs.getString("last_name"));
                 dto.setStatus(Invitation.InvitationStatus.valueOf(rs.getString("status")));
-                dto.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
                 invitations.add(dto);
             }
         } catch (SQLException e) {
@@ -143,7 +142,6 @@ public class InvitationService {
             dto.setRecipientId(recipientId);
             dto.setRecipientName(firstName + " " + lastName);
             dto.setStatus(Invitation.InvitationStatus.PENDING);
-            dto.setCreatedAt(LocalDateTime.now());
             
             return dto;
             
@@ -333,7 +331,6 @@ public class InvitationService {
             dto.setRecipientId(invitation.getRecipientId());
             dto.setRecipientName(firstName + " " + lastName);
             dto.setStatus(invitation.getStatus());
-            dto.setCreatedAt(invitation.getCreatedAt());
             
             return dto;
         } finally {
@@ -405,7 +402,7 @@ public class InvitationService {
         }
         return false;
     }
-    
+
     /**
      * Process batch operations on invitations
      */

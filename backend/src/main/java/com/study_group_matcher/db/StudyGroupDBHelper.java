@@ -27,7 +27,7 @@ public class StudyGroupDBHelper {
             conn = JDBCUtil.getConnection();
             ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
     
-            ps.setInt(1, group.getAdminID());
+            ps.setLong(1, group.getAdminID());
             ps.setString(2, group.getPrivacy().toString());
             ps.setInt(3, group.getMembers().size());
             ps.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));

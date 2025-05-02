@@ -9,7 +9,6 @@ public class InvitationDTO {
     private Long recipientId;
     private String recipientName;
     private Invitation.InvitationStatus status;
-    private LocalDateTime createdAt;
     
     public Long getId() {
         return id;
@@ -59,11 +58,4 @@ public class InvitationDTO {
         this.status = status;
     }
     
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-    
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
 }
