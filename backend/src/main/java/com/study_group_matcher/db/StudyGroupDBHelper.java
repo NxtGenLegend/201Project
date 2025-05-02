@@ -13,54 +13,55 @@ public class StudyGroupDBHelper {
 
     /*
     * I: StudyGroup object with initialized fields except groupID
-    * P: Connect to the database using JDBCUtil, insert a new row into the StudyGroup table 
-    *    with adminID, privacy, max_members, and creation_date;
+    * P: Insert a new row into the StudyGroup table
     * O: Returns the auto-generated groupID if successful; -1 if insertion failed
     */
     public static int insertStudyGroup(StudyGroup group) {
-        String query = "INSERT INTO StudyGroup (admin, privacy, max_members, creation_date) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO StudyGroup (admin_id, group_name, course, meeting_time, meeting_type, location, privacy, max_members, current_member_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet generatedKeys = null;
-    
+
         try {
             conn = JDBCUtil.getConnection();
             ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-    
+
             ps.setInt(1, group.getAdminID());
-            ps.setString(2, group.getPrivacy().toString());
-            ps.setInt(3, group.getMembers().size());
-            ps.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
-    
+            ps.setString(2, group.getGroupName());
+            ps.setString(3, group.getCourse());
+            ps.setTimestamp(4, Timestamp.valueOf(group.getMeetingTime()));
+            ps.setString(5, group.getMeetingType().toString());
+            ps.setString(6, group.getLocation());
+            ps.setString(7, group.getPrivacy().toString());
+            ps.setInt(8, 50); // default max_members
+            ps.setInt(9, 1);  // admin is initial member
+
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 0) {
                 throw new SQLException("Creating study group failed, no rows affected.");
             }
-    
+
             generatedKeys = ps.getGeneratedKeys();
             if (generatedKeys.next()) {
                 return generatedKeys.getInt(1);
-            }
-            else {
+            } else {
                 throw new SQLException("Creating study group failed, no ID obtained.");
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             System.err.println("Error inserting StudyGroup: " + e.getMessage());
-        }
-        finally {
+        } finally {
             JDBCUtil.close(generatedKeys);
             JDBCUtil.close(ps);
             JDBCUtil.close(conn);
         }
+
         return -1;
-    }    
+    }
 
     /*
     * I: Unique group ID
-    * P: Connects to the database and queries for the row in the StudyGroup table with that ID
-    *    Builds a new StudyGroup object using retrieved data and placeholder values for unqueried fields
-    * O: Returns a StudyGroup object if found, or null if the groupID is a lie
+    * P: Retrieve that StudyGroup from the database
+    * O: Returns a StudyGroup object if found; otherwise null
     */
     public static StudyGroup getStudyGroupByID(int groupID) {
         String query = "SELECT * FROM StudyGroup WHERE study_group_id = ?";
@@ -76,26 +77,28 @@ public class StudyGroupDBHelper {
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                int adminID = rs.getInt("admin");
-                String privacy = rs.getString("privacy");
-                int maxMembers = rs.getInt("max_members");
+                int adminID = rs.getInt("admin_id");
+                String groupName = rs.getString("group_name");
+                String course = rs.getString("course");
+                LocalDateTime meetingTime = rs.getTimestamp("meeting_time").toLocalDateTime();
+                MeetingType meetingType = MeetingType.valueOf(rs.getString("meeting_type"));
+                String location = rs.getString("location");
+                Privacy privacy = Privacy.valueOf(rs.getString("privacy"));
 
                 group = new StudyGroup(
-                    groupID,
-                    adminID,
-                    "PlaceholderName",
-                    "PlaceholderCourse",
-                    LocalDateTime.now(),
-                    MeetingType.IN_PERSON,
-                    "PlaceholderLocation",
-                    Privacy.valueOf(privacy)
+                        groupID,
+                        adminID,
+                        groupName,
+                        course,
+                        meetingTime,
+                        meetingType,
+                        location,
+                        privacy
                 );
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             System.err.println("Error retrieving StudyGroup: " + e.getMessage());
-        }
-        finally {
+        } finally {
             JDBCUtil.close(rs);
             JDBCUtil.close(ps);
             JDBCUtil.close(conn);
@@ -104,11 +107,10 @@ public class StudyGroupDBHelper {
         return group;
     }
 
-   /*
+    /*
     * I: None
-    * P: Connect to the database and selects all rows from the StudyGroup table
-    *    For each row, build a StudyGroup object using the retrieved data and placeholder values
-    * O: List of all StudyGroup objects stored in the database
+    * P: Retrieve all StudyGroups
+    * O: List of StudyGroup objects
     */
     public static List<StudyGroup> getAllStudyGroups() {
         String query = "SELECT * FROM StudyGroup";
@@ -124,24 +126,27 @@ public class StudyGroupDBHelper {
 
             while (rs.next()) {
                 int groupID = rs.getInt("study_group_id");
-                int adminID = rs.getInt("admin");
-                String privacy = rs.getString("privacy");
+                int adminID = rs.getInt("admin_id");
+                String groupName = rs.getString("group_name");
+                String course = rs.getString("course");
+                LocalDateTime meetingTime = rs.getTimestamp("meeting_time").toLocalDateTime();
+                MeetingType meetingType = MeetingType.valueOf(rs.getString("meeting_type"));
+                String location = rs.getString("location");
+                Privacy privacy = Privacy.valueOf(rs.getString("privacy"));
 
                 StudyGroup group = new StudyGroup(
                         groupID,
                         adminID,
-                        "PlaceholderName",
-                        "PlaceholderCourse",
-                        LocalDateTime.now(),
-                        MeetingType.IN_PERSON,
-                        "PlaceholderLocation",
-                        Privacy.valueOf(privacy)
+                        groupName,
+                        course,
+                        meetingTime,
+                        meetingType,
+                        location,
+                        privacy
                 );
                 groups.add(group);
             }
-
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             System.err.println("Error retrieving all StudyGroups: " + e.getMessage());
         } finally {
             JDBCUtil.close(rs);
@@ -154,8 +159,7 @@ public class StudyGroupDBHelper {
 
     /*
     * I: Unique group ID to delete
-    * P: Connect to the database and delete the record from the StudyGroup table with that ID
-    * O: Remove the row from the database if it exists
+    * P: Delete StudyGroup from the database
     */
     public static void deleteStudyGroup(int groupID) {
         String query = "DELETE FROM StudyGroup WHERE study_group_id = ?";
