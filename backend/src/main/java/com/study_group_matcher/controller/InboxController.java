@@ -3,6 +3,7 @@ package com.study_group_matcher.controller;
 import com.study_group_matcher.model.Inbox;
 import com.study_group_matcher.db.InboxDBHelper;
 import com.study_group_matcher.db.JDBCUtil;
+import com.study_group_matcher.model.InboxDTO;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
