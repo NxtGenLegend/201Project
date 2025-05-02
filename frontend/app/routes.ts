@@ -5,4 +5,6 @@ export default [index("routes/home.tsx"),
   route("login", "routes/login.tsx"),
   route("register", "routes/register.tsx"),
   route("inbox", "routes/Inbox.tsx"),
+  route("viewDetails", "routes/view-group-details.tsx"),
+  route("createStudyGroup", "routes/study-creation-page.tsx"),
 ] satisfies RouteConfig;

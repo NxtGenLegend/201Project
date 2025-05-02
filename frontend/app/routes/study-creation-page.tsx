@@ -4,6 +4,17 @@ import "app/styles/study-creation-page.css";
 const CountNavigationBar = React.lazy(() => import('../components/Header/Header'));
 
 /* File Holds Study Creation Form and Input Fields */
+// function formatTime(timeStr){
+//     const [hours, minutes] = timeStr.split(':');
+//     const date = new Date();
+//     date.setHours(parseInt(hours), parseInt(minutes));
+
+//     return date.toLocaleTimeString('en-US', {
+//     hour: 'numeric',
+//     minute: '2-digit',
+//     hour12: true
+//     });
+// }
 export default function StudyCreationForm() {
   return (
     <div>
