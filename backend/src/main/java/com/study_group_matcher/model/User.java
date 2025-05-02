@@ -87,6 +87,4 @@ public class User {
     List<StudyGroup> studyGroups;
     Inbox inbox;
 
-
-
 }

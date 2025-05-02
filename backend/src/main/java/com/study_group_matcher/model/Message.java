@@ -49,4 +49,8 @@ public class Message {
     public LocalDateTime getTimestamp() {
         return timestamp;
     }
+
+    public String getMessageContents() {
+        return messageBody;
+    }
 }
