@@ -24,7 +24,6 @@ CREATE TABLE IF NOT EXISTS StudyGroup (
     privacy ENUM('PUBLIC', 'PRIVATE') DEFAULT 'PUBLIC',
     max_members INT DEFAULT 50,
     current_member_count INT DEFAULT 0,
-    creation_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (admin_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
 
