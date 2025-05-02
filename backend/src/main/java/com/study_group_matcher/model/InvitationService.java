@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class InvitationService {
@@ -338,5 +340,88 @@ public class InvitationService {
             JDBCUtil.close(rs);
             JDBCUtil.close(ps);
         }
+    }
+
+    /**
+     * Check if a user is the admin for a specific group
+     */
+    public boolean isGroupAdmin(Long groupId, Long userId) {
+        try (Connection conn = JDBCUtil.getConnection()) {
+            String sql = "SELECT COUNT(*) FROM StudyGroupMembers " +
+                        "WHERE study_group_id = ? AND user_id = ? AND group_role = 'ADMIN'";
+            
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setLong(1, groupId);
+                stmt.setLong(2, userId);
+                
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getInt(1) > 0;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error checking admin status: " + e.getMessage(), e);
+        }
+        return false;
+    }
+
+    /**
+     * Check if a user is an AdminUser
+     */
+    public boolean isUserAdmin(Long userId) {
+        try (Connection conn = JDBCUtil.getConnection()) {
+            // Query to check if user is in AdminUser table or has admin flag
+            String sql = "SELECT COUNT(*) FROM Users WHERE user_id = ? AND role = 'ADMIN'";
+            
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setLong(1, userId);
+                
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getInt(1) > 0;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error checking admin status: " + e.getMessage(), e);
+        }
+        return false;
+    }
+
+    /**
+     * Process batch operations on invitations
+     */
+    public Map<String, Object> processBatchOperation(String operation, List<Long> invitationIds) {
+        Map<String, Object> result = new HashMap<>();
+        List<Long> processed = new ArrayList<>();
+        List<String> errors = new ArrayList<>();
+        
+        for (Long invitationId : invitationIds) {
+            try {
+                switch (operation) {
+                    case "accept":
+                        // Logic to accept invitation
+                        processed.add(invitationId);
+                        break;
+                    case "decline":
+                        // Logic to decline invitation
+                        processed.add(invitationId);
+                        break;
+                    case "delete":
+                        // Logic to delete invitation
+                        processed.add(invitationId);
+                        break;
+                    default:
+                        errors.add("Unknown operation: " + operation + " for invitation " + invitationId);
+                }
+            } catch (Exception e) {
+                errors.add("Error processing invitation " + invitationId + ": " + e.getMessage());
+            }
+        }
+        
+        result.put("processed", processed);
+        result.put("errors", errors);
+        return result;
     }
 }

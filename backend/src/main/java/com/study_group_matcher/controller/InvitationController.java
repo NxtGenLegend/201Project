@@ -1,5 +1,6 @@
 package com.study_group_matcher.controller;
 
+import com.study_group_matcher.model.AdminUser;
 import com.study_group_matcher.model.InvitationDTO;
 import com.study_group_matcher.model.InvitationService;
 import com.study_group_matcher.model.User;
@@ -9,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,19 +26,12 @@ public class InvitationController {
     }
     
     /**
-     * Get all pending invitations for the current user
+     * Get all pending invitations for a user
      */
-    @GetMapping("/pending")
-    public ResponseEntity<?> getPendingInvitations(HttpSession session) {
+    @GetMapping("/pending/{userId}")
+    public ResponseEntity<?> getPendingInvitations(@PathVariable Long userId) {
         try {
-            User currentUser = (User) session.getAttribute("currentUser");
-            if (currentUser == null) {
-                Map<String, String> response = new HashMap<>();
-                response.put("error", "Not authenticated");
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-            }
-            
-            List<InvitationDTO> invitations = invitationService.getPendingInvitationsForUser(currentUser.getUser_id());
+            List<InvitationDTO> invitations = invitationService.getPendingInvitationsForUser(userId);
             return ResponseEntity.ok(invitations);
         } catch (Exception e) {
             Map<String, String> response = new HashMap<>();
@@ -48,25 +41,29 @@ public class InvitationController {
     }
     
     /**
-     * Create a new invitation
+     * Create a new invitation - requires admin privileges
      */
     @PostMapping
-    public ResponseEntity<?> createInvitation(@RequestBody Map<String, Long> request, HttpSession session) {
+    public ResponseEntity<?> createInvitation(
+            @RequestBody Map<String, Object> request,
+            @RequestParam Long creatorId) {
         try {
-            User currentUser = (User) session.getAttribute("currentUser");
-            if (currentUser == null) {
-                Map<String, String> response = new HashMap<>();
-                response.put("error", "Not authenticated");
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-            }
-            
-            Long groupId = request.get("groupId");
-            Long recipientId = request.get("recipientId");
+            // Extract request parameters
+            Long groupId = Long.valueOf(request.get("groupId").toString());
+            Long recipientId = Long.valueOf(request.get("recipientId").toString());
             
             if (groupId == null || recipientId == null) {
                 Map<String, String> response = new HashMap<>();
                 response.put("error", "Group ID and recipient ID are required");
                 return ResponseEntity.badRequest().body(response);
+            }
+            
+            // Check if user is admin for this group
+            boolean isAdmin = invitationService.isGroupAdmin(groupId, creatorId);
+            if (!isAdmin) {
+                Map<String, String> response = new HashMap<>();
+                response.put("error", "Only group admins can send invitations");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
             }
             
             InvitationDTO invitation = invitationService.createInvitation(groupId, recipientId);
@@ -82,16 +79,11 @@ public class InvitationController {
      * Accept an invitation
      */
     @PostMapping("/{invitationId}/accept")
-    public ResponseEntity<?> acceptInvitation(@PathVariable Long invitationId, HttpSession session) {
+    public ResponseEntity<?> acceptInvitation(
+            @PathVariable Long invitationId,
+            @RequestParam Long userId) {
         try {
-            User currentUser = (User) session.getAttribute("currentUser");
-            if (currentUser == null) {
-                Map<String, String> response = new HashMap<>();
-                response.put("error", "Not authenticated");
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-            }
-            
-            InvitationDTO invitation = invitationService.acceptInvitation(invitationId, currentUser.getUser_id());
+            InvitationDTO invitation = invitationService.acceptInvitation(invitationId, userId);
             return ResponseEntity.ok(invitation);
         } catch (Exception e) {
             Map<String, String> response = new HashMap<>();
@@ -104,16 +96,11 @@ public class InvitationController {
      * Decline an invitation
      */
     @PostMapping("/{invitationId}/decline")
-    public ResponseEntity<?> declineInvitation(@PathVariable Long invitationId, HttpSession session) {
+    public ResponseEntity<?> declineInvitation(
+            @PathVariable Long invitationId,
+            @RequestParam Long userId) {
         try {
-            User currentUser = (User) session.getAttribute("currentUser");
-            if (currentUser == null) {
-                Map<String, String> response = new HashMap<>();
-                response.put("error", "Not authenticated");
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-            }
-            
-            InvitationDTO invitation = invitationService.declineInvitation(invitationId, currentUser.getUser_id());
+            InvitationDTO invitation = invitationService.declineInvitation(invitationId, userId);
             return ResponseEntity.ok(invitation);
         } catch (Exception e) {
             Map<String, String> response = new HashMap<>();
@@ -123,18 +110,31 @@ public class InvitationController {
     }
     
     /**
-     * Endpoint to accept userId as a parameter 
+     * Administrative function to manage multiple invitations
+     * Requires AdminUser privileges
      */
-    @PostMapping("/{invitationId}/accept/{userId}")
-    public ResponseEntity<?> acceptInvitationWithUserId(
-            @PathVariable Long invitationId, 
-            @PathVariable Long userId) {
+    @PostMapping("/admin/batch")
+    public ResponseEntity<?> adminBatchOperation(
+            @RequestBody Map<String, Object> request,
+            @RequestParam Long adminUserId) {
         try {
-            InvitationDTO invitation = invitationService.acceptInvitation(invitationId, userId);
-            return ResponseEntity.ok(invitation);
+            // Check if user is an admin
+            boolean isAdmin = invitationService.isUserAdmin(adminUserId);
+            if (!isAdmin) {
+                Map<String, String> response = new HashMap<>();
+                response.put("error", "This operation requires administrative privileges");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+            }
+            
+            // Process batch operation
+            String operation = (String) request.get("operation");
+            List<Long> invitationIds = (List<Long>) request.get("invitationIds");
+            
+            Map<String, Object> result = invitationService.processBatchOperation(operation, invitationIds);
+            return ResponseEntity.ok(result);
         } catch (Exception e) {
             Map<String, String> response = new HashMap<>();
-            response.put("error", "Failed to accept invitation: " + e.getMessage());
+            response.put("error", "Failed to process batch operation: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
