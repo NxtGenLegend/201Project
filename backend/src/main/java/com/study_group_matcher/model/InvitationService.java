@@ -347,16 +347,32 @@ public class InvitationService {
      */
     public boolean isGroupAdmin(Long groupId, Long userId) {
         try (Connection conn = JDBCUtil.getConnection()) {
-            String sql = "SELECT COUNT(*) FROM StudyGroupMembers " +
-                        "WHERE study_group_id = ? AND user_id = ? AND group_role = 'ADMIN'";
+            // First check if the user is the creator of the group
+            String sql = "SELECT COUNT(*) FROM StudyGroup " +
+                        "WHERE study_group_id = ? AND admin_id = ?";
             
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setLong(1, groupId);
                 stmt.setLong(2, userId);
                 
                 try (ResultSet rs = stmt.executeQuery()) {
-                    if (rs.next()) {
-                        return rs.getInt(1) > 0;
+                    if (rs.next() && rs.getInt(1) > 0) {
+                        return true;
+                    }
+                }
+                
+                // Also check StudyGroupMembers with ADMIN role
+                String memberSql = "SELECT COUNT(*) FROM StudyGroupMembers " +
+                                "WHERE study_group_id = ? AND user_id = ? AND group_role = 'ADMIN'";
+                
+                try (PreparedStatement memberStmt = conn.prepareStatement(memberSql)) {
+                    memberStmt.setLong(1, groupId);
+                    memberStmt.setLong(2, userId);
+                    
+                    try (ResultSet memberRs = memberStmt.executeQuery()) {
+                        if (memberRs.next()) {
+                            return memberRs.getInt(1) > 0;
+                        }
                     }
                 }
             }
@@ -371,15 +387,16 @@ public class InvitationService {
      */
     public boolean isUserAdmin(Long userId) {
         try (Connection conn = JDBCUtil.getConnection()) {
-            // Query to check if user is in AdminUser table or has admin flag
-            String sql = "SELECT COUNT(*) FROM Users WHERE user_id = ? AND role = 'ADMIN'";
+            // Find all groups where this user is an admin
+            String sql = "SELECT COUNT(*) FROM StudyGroup WHERE admin_id = ?";
             
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setLong(1, userId);
                 
                 try (ResultSet rs = stmt.executeQuery()) {
-                    if (rs.next()) {
-                        return rs.getInt(1) > 0;
+                    if (rs.next() && rs.getInt(1) > 0) {
+                        // If the user is an admin of any group, consider them an admin user
+                        return true;
                     }
                 }
             }
@@ -388,7 +405,7 @@ public class InvitationService {
         }
         return false;
     }
-
+    
     /**
      * Process batch operations on invitations
      */
