@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class StudyGroup {
     private int groupID;
-    private Long adminID;
+    private int adminID;
     private String groupName;
     private String course;
     private LocalDateTime meetingTime;
@@ -66,13 +66,13 @@ public class StudyGroup {
     }
 
     public void sendInvite(User user) {
-        Invitation invite = new Invitation(this, user);
+        Invitation invite = new Invitation((long) this.groupID, (long) user.getUser_id());
         pendingInvites.add(invite);
     }
 
     // removes the user’s invitation from the pending queue then add them to the study group’s member list
     public void approveRequest(User user) {
-        pendingInvites.removeIf(invite -> invite.getRecipient().equals(user));
+        pendingInvites.removeIf(invite -> invite.getRecipientId().equals(user));
         members.add(user);
     }
 

@@ -14,17 +14,14 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/studygroup")
+@CrossOrigin(origins = "*") // Optional: allow cross-origin requests from frontend
 public class StudyGroupController {
 
-    
     /*
-    * I: JSON payload via HTTP POST with this stuff:
-    * adminID, groupName, course, meetingTime, meetingType, location, privacy
-    * P: Parse input data, construct a StudyGroup object,
-    * insert the group into the database,
-    * and retrieve its generated groupID
-    * O: JSON response with "success" status, "message", and the generated "groupID" if successful
-    */ 
+     * I: JSON payload with adminID, groupName, course, meetingTime, meetingType, location, privacy
+     * P: Parse input and create a new StudyGroup, store in DB, return group ID
+     * O: JSON response with status, message, and new groupID
+     */
     @PostMapping("/create")
     public Map<String, Object> createStudyGroup(@RequestBody Map<String, String> data) {
         Map<String, Object> response = new HashMap<>();
@@ -34,12 +31,20 @@ public class StudyGroupController {
             String groupName = data.get("groupName");
             String course = data.get("course");
             String location = data.get("location");
-
             LocalDateTime meetingTime = LocalDateTime.parse(data.get("meetingTime"));
             MeetingType meetingType = MeetingType.valueOf(data.get("meetingType").toUpperCase());
             Privacy privacy = Privacy.valueOf(data.get("privacy").toUpperCase());
 
-            StudyGroup group = new StudyGroup(-1, adminID, groupName, course, meetingTime, meetingType, location, privacy);
+            StudyGroup group = new StudyGroup(
+                    -1, // auto-generated groupID
+                    adminID,
+                    groupName,
+                    course,
+                    meetingTime,
+                    meetingType,
+                    location,
+                    privacy
+            );
 
             int generatedGroupID = StudyGroupDBHelper.insertStudyGroup(group);
 
@@ -50,8 +55,7 @@ public class StudyGroupController {
             response.put("success", true);
             response.put("message", "Study group created successfully.");
             response.put("groupID", generatedGroupID);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             response.put("success", false);
             response.put("message", "Failed to create study group: " + e.getMessage());
         }
@@ -59,11 +63,11 @@ public class StudyGroupController {
         return response;
     }
 
-     /*
-    * I: Study group ID as a path variable
-    * P: Retrieve study group information from the database using StudyGroupDBHelper
-    * O: JSON response with study group data or error message if not found
-    */
+    /*
+     * I: groupID (path variable)
+     * P: Retrieve specific study group by ID
+     * O: JSON response with group data or error
+     */
     @GetMapping("/{groupID}")
     public Map<String, Object> getStudyGroup(@PathVariable int groupID) {
         Map<String, Object> response = new HashMap<>();
@@ -82,13 +86,12 @@ public class StudyGroupController {
         }
         return response;
     }
-    
-    /*
-    * I: None
-    * P: Retrieve all study groups from the database using StudyGroupDBHelper
-    * O: JSON response with list of all study groups
-    */
 
+    /*
+     * I: None
+     * P: Retrieve all study groups
+     * O: JSON response with list of groups
+     */
     @GetMapping("/all")
     public Map<String, Object> getAllStudyGroups() {
         Map<String, Object> response = new HashMap<>();
@@ -103,12 +106,12 @@ public class StudyGroupController {
         }
         return response;
     }
-    
+
     /*
-    * I: Study group ID as a path variable
-    * P: Delete the study group from the database using StudyGroupDBHelper
-    * O: JSON response with success/failure status and message
-    */
+     * I: groupID (path variable)
+     * P: Delete study group by ID
+     * O: JSON response with status
+     */
     @DeleteMapping("/{groupID}")
     public Map<String, Object> deleteStudyGroup(@PathVariable int groupID) {
         Map<String, Object> response = new HashMap<>();
@@ -119,7 +122,7 @@ public class StudyGroupController {
                 response.put("message", "Study group not found with ID: " + groupID);
                 return response;
             }
-            
+
             StudyGroupDBHelper.deleteStudyGroup(groupID);
             response.put("success", true);
             response.put("message", "Study group deleted successfully.");
@@ -129,5 +132,4 @@ public class StudyGroupController {
         }
         return response;
     }
-
 }
