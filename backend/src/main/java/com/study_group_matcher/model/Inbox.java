@@ -1,9 +1,5 @@
 package com.study_group_matcher.model;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 public class Inbox {
     private long inbox_id;
     private long user_id;
@@ -61,6 +57,5 @@ public class Inbox {
     public void setInvitationID(long invitation_id) {
         this.invitation_id = invitation_id;
     }
-
     
 }

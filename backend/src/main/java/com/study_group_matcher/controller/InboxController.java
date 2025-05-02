@@ -49,20 +49,17 @@ public class InboxController {
     public ResponseEntity<?> getAll(@PathVariable long user_id) {
         List<Inbox> inboxEntries = inboxDBHelper.getAll(user_id);
         List<InboxDTO> responseList = new ArrayList<>();
-    
+
         for (Inbox inbox : inboxEntries) {
-            Long message_id = inbox.getMessageID() != 0 ? inbox.getMessageID() : null;
-            Long invitation_id = inbox.getInvitationID() != 0 ? inbox.getInvitationID() : null;
+            Long message_id = inbox.getMessageID() != 0 ? inbox.getMessageID() : null;           // set the id if not 0 or set it to null
+            Long invitation_id = inbox.getInvitationID() != 0 ? inbox.getInvitationID() : null;  // set the id if not 0 or set it to null 
             responseList.add(new InboxDTO(message_id, invitation_id));
         }
-    
+
         if (responseList.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                                 .body("No messages or invitations found for this user.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No messages or invitations found for this user.");
         }
-    
         return ResponseEntity.ok(responseList);
     }
-
 }
 
