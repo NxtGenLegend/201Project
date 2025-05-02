@@ -44,13 +44,13 @@ public class InvitationController {
     
     @PostMapping("/{invitationId}/accept")
     public ResponseEntity<InvitationDTO> acceptInvitation(@PathVariable Long invitationId) {
-        Long userId = getCurrentUserId();
+        Long userId = getUser_id();
         return ResponseEntity.ok(invitationService.acceptInvitation(invitationId, userId));
     }
     
     @PostMapping("/{invitationId}/decline")
     public ResponseEntity<InvitationDTO> declineInvitation(@PathVariable Long invitationId) {
-        Long userId = getCurrentUserId();
+        Long userId = getUser_id();
         return ResponseEntity.ok(invitationService.declineInvitation(invitationId, userId));
     }
     
@@ -58,6 +58,6 @@ public class InvitationController {
     private Long getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) authentication.getPrincipal();
-        return currentUser.getUserId();
+        return currentUser.getUser_id();
     }
 }

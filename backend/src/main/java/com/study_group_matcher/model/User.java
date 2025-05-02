@@ -9,7 +9,7 @@ import com.study_group_matcher.model.StudyGroup;
 import com.study_group_matcher.model.Inbox;
 
 public class User {
-    public User(int id, String p, String f, String l, String d){
+    public User(long id, String p, String f, String l, String d){
         user_id = id;
         password = p;
         firstName = f;
@@ -23,11 +23,11 @@ public class User {
     public User(){
 
     }
-    public int getUser_id(){
+    public Long getUser_id(){
         return user_id;
 
     }
-    public void setUser_id(int id){
+    public void setUser_id(long id){
         user_id = id;
     }
     public String getPassword(){
@@ -77,7 +77,7 @@ public class User {
     }
 
     private
-    int user_id;
+    Long user_id;
     LocalDateTime lastLoginTime;
     String password;
     String firstName;
