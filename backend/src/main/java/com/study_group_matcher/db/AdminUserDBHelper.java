@@ -79,7 +79,7 @@ public class AdminUserDBHelper extends UserDBHelper {
         try (PreparedStatement stmt = connect.prepareStatement(addMembersSql)) {
             for (User user : users) {
                 stmt.setInt(1, groupId);
-                stmt.setInt(2, user.getUser_id());
+                stmt.setInt(2, user.getUserId());
                 stmt.setString(3, "MEMBER"); // Default role is member
                 stmt.addBatch();
             }
