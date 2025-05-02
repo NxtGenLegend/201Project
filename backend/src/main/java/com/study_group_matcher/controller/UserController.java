@@ -59,7 +59,7 @@ public class UserController {
             UserDBHelper userDBHelper = new UserDBHelper(conn);
             User user = userDBHelper.getUserByUsername(username);
             
-            if (user != null && password == user.getPassword()) {
+            if (user != null && password.equals(user.getPassword())) {
                 LocalDateTime loggedIn = LocalDateTime.now();
                 user.setLastLoginTime(loggedIn);
                 return ResponseEntity.ok(user);

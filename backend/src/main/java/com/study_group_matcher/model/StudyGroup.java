@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class StudyGroup {
     private int groupID;
-    private int adminID;
+    private Long adminID;
     private String groupName;
     private String course;
     private LocalDateTime meetingTime;
@@ -38,7 +38,13 @@ public class StudyGroup {
     }
 
     public StudyGroup(String name, String courseName, AdminUser adminUser) {
-        //TODO Auto-generated constructor stub
+        this.groupName = name;
+        this.course = courseName;
+        this.adminID = adminUser.getUser_id();
+        this.meetingTime = LocalDateTime.now();
+        this.meetingType = MeetingType.IN_PERSON;
+        this.location = "";
+        this.privacy = Privacy.PUBLIC;
     }
 
     public void addMember(User user) {
