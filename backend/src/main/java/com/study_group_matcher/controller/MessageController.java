@@ -3,6 +3,9 @@ package com.study_group_matcher.controller;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+
+import javax.sql.DataSource;
+
 import com.study_group_matcher.model.Message;
 import com.study_group_matcher.db.MessageDao;
 
@@ -14,12 +17,12 @@ import org.springframework.web.bind.annotation.*;
 public class MessageController {
 
     @Autowired
-    private Connection connection;  // Injected DB connection (or use a service)
+    private DataSource dataSource;
 
     @PostMapping("/dm")
     public String sendDirectMessage(@RequestBody Message message) {
-        MessageDao dao = new MessageDao(connection);
-        try {
+        try (Connection connection = dataSource.getConnection()) {
+            MessageDao dao = new MessageDao(connection);
             dao.saveMessage(message);
             return "Message sent";
         } catch (SQLException e) {
@@ -30,12 +33,12 @@ public class MessageController {
 
     @GetMapping("/dm")
     public List<Message> getConversation(@RequestParam int userA, @RequestParam int userB) {
-        MessageDao dao = new MessageDao(connection);
-        try {
+        try (Connection connection = dataSource.getConnection()) {
+            MessageDao dao = new MessageDao(connection);
             return dao.getConversation(userA, userB);
         } catch (SQLException e) {
             e.printStackTrace();
-            return List.of(); // Return empty list on error
+            return List.of();
         }
     }
 }
