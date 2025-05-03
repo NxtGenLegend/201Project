@@ -53,7 +53,7 @@ public class UserDBHelper {
      * @throws SQLException if database error occurs
      */
     public void insertUser(User curr) throws SQLException {
-        String sql = "INSERT INTO Users (username, password, first_name, last_name, last_login_time) " +
+        String sql = "INSERT INTO Users (username, password, first_name, last_name) " +
                      "VALUES (?, ?, ?, ?, ?)";
         String hashedPass = hashPassword(curr.getPassword());
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -66,7 +66,7 @@ public class UserDBHelper {
             // Get the generated user ID
             try (ResultSet rs = stmt.getGeneratedKeys()) {
                 if (rs.next()) {
-                    curr.setUser_id((rs.getInt(1)));
+                    curr.setUserId((rs.getInt(1)));
                 }
             }
         }
@@ -111,7 +111,7 @@ public class UserDBHelper {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     User user = new User();
-                    user.setUser_id((rs.getInt("user_id")));
+                    user.setUserId((rs.getInt("user_id")));
                     user.setPassword(rs.getString("password")); // Hashed password
                     user.setFirstName(rs.getString("first_name"));
                     user.setLastName(rs.getString("last_name"));
@@ -129,7 +129,7 @@ public class UserDBHelper {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     User user = new User();
-                    user.setUser_id((rs.getInt("user_id")));
+                    user.setUserId((rs.getInt("user_id")));
                     user.setPassword(rs.getString("password")); // Hashed password
                     user.setFirstName(rs.getString("first_name"));
                     user.setLastName(rs.getString("last_name"));
@@ -159,7 +159,7 @@ public class UserDBHelper {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     User user = new User();
-                    user.setUser_id((rs.getInt("user_id")));
+                    user.setUserId((rs.getInt("user_id")));
                     user.setPassword(rs.getString("password"));
                     user.setFirstName(rs.getString("first_name"));
                     user.setLastName(rs.getString("last_name"));

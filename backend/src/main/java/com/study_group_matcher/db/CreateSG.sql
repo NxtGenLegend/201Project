@@ -1,18 +1,17 @@
 CREATE DATABASE IF NOT EXISTS STUDY_GROUP_MATCHER;
 USE STUDY_GROUP_MATCHER;
 
--- Users table 
+-- Users table with all required fields
 CREATE TABLE IF NOT EXISTS Users (
     user_id INT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
-    display_name VARCHAR(255),
-    last_login_time DATETIME DEFAULT CURRENT_TIMESTAMP
+    display_name VARCHAR(255)
 );
 
--- StudyGroup table 
+-- StudyGroup table with all required fields including current_member_count
 CREATE TABLE IF NOT EXISTS StudyGroup (
     study_group_id INT PRIMARY KEY AUTO_INCREMENT,
     admin_id INT NOT NULL,
@@ -27,7 +26,7 @@ CREATE TABLE IF NOT EXISTS StudyGroup (
     FOREIGN KEY (admin_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
 
--- StudyGroupMembers junction table 
+-- StudyGroupMembers junction table - keeping this for proper relational design
 CREATE TABLE IF NOT EXISTS StudyGroupMembers (
     study_group_id INT NOT NULL,
     user_id INT NOT NULL,
