@@ -81,4 +81,56 @@ public class StudyGroup {
         messages.clear();
         pendingInvites.clear();
     }
+
+    public int getGroupID() {
+        return groupID;
+    }
+    public void setGroupID(int groupID) {
+        this.groupID = groupID;
+    }
+    public int getAdminID() {
+        return adminID;
+    }
+    public void setAdminID(int adminID) {
+        this.adminID = adminID;
+    }
+    public String getGroupName() {
+        return groupName;
+    }
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+    public String getCourse() {
+        return course;
+    }
+    public void setCourse(String course) {
+        this.course = course;
+    }
+    public LocalDateTime getMeetingTime() {
+        return meetingTime;
+    }
+    public void setMeetingTime(LocalDateTime meetingTime) {
+        this.meetingTime = meetingTime;
+    }
+    public MeetingType getMeetingType() {
+        return meetingType;
+    }
+    public void setMeetingType(MeetingType meetingType) {
+        this.meetingType = meetingType;
+    }
+    public String getLocation() {
+        return location;
+    }
+    public void setLocation(String location) {
+        this.location = location;
+    }
+    public Privacy getPrivacy() {
+        return privacy;
+    }
+    public void setPrivacy(Privacy privacy) {
+        this.privacy = privacy;
+    }
+    public HashSet<User> getMembers() {
+        return members;
+    }
 }
