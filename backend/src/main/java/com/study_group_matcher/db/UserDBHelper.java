@@ -57,7 +57,6 @@ public class UserDBHelper {
                      "VALUES (?, ?, ?, ?, ?)";
         String hashedPass = hashPassword(curr.getPassword());
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            String stringLogin = loginTime.toString();
             stmt.setString(2, hashedPass); 
             stmt.setString(3, curr.getFirstName());
             stmt.setString(4, curr.getLastName());
