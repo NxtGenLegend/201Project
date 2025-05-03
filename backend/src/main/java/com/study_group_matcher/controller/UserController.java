@@ -1,11 +1,11 @@
 package com.study_group_matcher.controller;
 
 import org.springframework.web.bind.annotation.*;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.http.ResponseEntity;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
-import java.time.LocalDateTime;
 import com.study_group_matcher.model.User;
 import com.study_group_matcher.db.JDBCUtil;
 import com.study_group_matcher.db.UserDBHelper;
@@ -26,7 +26,6 @@ public class UserController {
         String password = request.get("password");
         String firstName = request.get("first_name");
         String lastName = request.get("last_name");
-        LocalDateTime firstLogin = LocalDateTime.now();
         
         // Validation would need to be manual
         if (username == null || username.isBlank()) {
@@ -57,8 +56,7 @@ public class UserController {
             UserDBHelper userDBHelper = new UserDBHelper(conn);
             User user = userDBHelper.getUserByUsername(username);
             
-            if (user != null && password.equals(user.getPassword())) {
-                LocalDateTime loggedIn = LocalDateTime.now();
+            if (user != null && BCrypt.checkpw(password, user.getPassword())) {
                 return ResponseEntity.ok(user);
             }
             return ResponseEntity.status(401).build();

@@ -57,9 +57,7 @@ public class UserDBHelper {
                      "VALUES (?, ?, ?, ?, ?)";
         String hashedPass = hashPassword(curr.getPassword());
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            LocalDateTime loginTime = curr.getLastLoginTime();
             String stringLogin = loginTime.toString();
-            stmt.setString(1, curr.getDisplayName());
             stmt.setString(2, hashedPass); 
             stmt.setString(3, curr.getFirstName());
             stmt.setString(4, curr.getLastName());
@@ -115,7 +113,6 @@ public class UserDBHelper {
                 if (rs.next()) {
                     User user = new User();
                     user.setUser_id((rs.getInt("user_id")));
-                    user.setDisplayName((rs.getString("username")));
                     user.setPassword(rs.getString("password")); // Hashed password
                     user.setFirstName(rs.getString("first_name"));
                     user.setLastName(rs.getString("last_name"));
@@ -134,7 +131,6 @@ public class UserDBHelper {
                 if (rs.next()) {
                     User user = new User();
                     user.setUser_id((rs.getInt("user_id")));
-                    user.setDisplayName(rs.getString("username"));
                     user.setPassword(rs.getString("password")); // Hashed password
                     user.setFirstName(rs.getString("first_name"));
                     user.setLastName(rs.getString("last_name"));
@@ -165,7 +161,6 @@ public class UserDBHelper {
                 while (rs.next()) {
                     User user = new User();
                     user.setUser_id((rs.getInt("user_id")));
-                    user.setDisplayName(rs.getString("username"));
                     user.setPassword(rs.getString("password"));
                     user.setFirstName(rs.getString("first_name"));
                     user.setLastName(rs.getString("last_name"));
