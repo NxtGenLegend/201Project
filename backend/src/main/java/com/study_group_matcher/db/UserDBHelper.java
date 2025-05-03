@@ -98,7 +98,7 @@ public class UserDBHelper {
         
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, curr.getUser_id());
-            stmt.setInt(2, m.getRecipientID()); // Assuming Message has getRecipientID()
+            stmt.setInt(2, m.getRecipientId()); // Assuming Message has getRecipientID()
             stmt.setString(3, m.getMessageContents());
             stmt.executeUpdate();
         }
