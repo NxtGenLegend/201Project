@@ -55,6 +55,7 @@ public class UserDBHelper {
     public void insertUser(User curr) throws SQLException {
         String sql = "INSERT INTO Users (username, password, first_name, last_name) " +
                      "VALUES (?, ?, ?, ?, ?)";
+        String stringLogin = "root";
         String hashedPass = hashPassword(curr.getPassword());
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(2, hashedPass); 

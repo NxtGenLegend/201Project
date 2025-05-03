@@ -23,8 +23,4 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
     }
-
-    public Integer getUser_id() {
-        return this.userId;
-    }
 }

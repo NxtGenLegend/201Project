@@ -1,6 +1,7 @@
 {
   "name": "frontend",
   "private": true,
+  "proxy": "http://localhost:8080/",
   "type": "module",
   "scripts": {
     "build": "react-router build",
