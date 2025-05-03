@@ -40,7 +40,7 @@ public class StudyGroup {
     public StudyGroup(String name, String courseName, AdminUser adminUser) {
         this.groupName = name;
         this.course = courseName;
-        this.adminID = adminUser.getUser_id();
+        this.adminID = adminUser.getUserId();
         this.meetingTime = LocalDateTime.now();
         this.meetingType = MeetingType.IN_PERSON;
         this.location = "";
@@ -66,7 +66,7 @@ public class StudyGroup {
     }
 
     public void sendInvite(User user) {
-        Invitation invite = new Invitation((long) this.groupID, (long) user.getUser_id());
+        Invitation invite = new Invitation((long) this.groupID, (long) user.getUserId());
         pendingInvites.add(invite);
     }
 

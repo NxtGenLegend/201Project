@@ -53,11 +53,14 @@ public class UserDBHelper {
      * @throws SQLException if database error occurs
      */
     public void insertUser(User curr) throws SQLException {
-        String sql = "INSERT INTO Users (username, password, first_name, last_name) " +
+        String sql = "INSERT INTO Users (username, password, first_name, last_name, last_login_time) " +
                      "VALUES (?, ?, ?, ?, ?)";
         String stringLogin = "root";
         String hashedPass = hashPassword(curr.getPassword());
+        LocalDateTime loginTime = LocalDateTime.now();
+        String stringLogin = loginTime.toString();
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, curr.getDisplayName());
             stmt.setString(2, hashedPass); 
             stmt.setString(3, curr.getFirstName());
             stmt.setString(4, curr.getLastName());
