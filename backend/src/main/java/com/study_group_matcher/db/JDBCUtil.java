@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class JDBCUtil {
-	private static final String URL = "jdbc:mysql://localhost:3306/STUDY_GROUP_MATCHER";
+	private static final String URL = "jdbc:mysql://localhost:3306/study_group_matcher";
     private static final String USER = "root";
     private static final String PASSWORD = "root";
 
