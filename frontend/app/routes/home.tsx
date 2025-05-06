@@ -23,7 +23,7 @@ export default function Home() {
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        const response = await axios.get('http://10.25.117.46:8080/studygroup/all');
+        const response = await axios.get('http://localhost:8080/studygroup/all');
         const groups = response.data.studyGroups;
         setGroups(groups); // assuming response is already a list of StudyGroup
       } catch (error) {
