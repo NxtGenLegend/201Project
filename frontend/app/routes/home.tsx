@@ -1,55 +1,39 @@
 import '../styles/Home.css';
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
+import axios from 'axios';
 
 // import ui components
 const Header = React.lazy(() => import('../components/Header/Header'));
 const GroupCard = React.lazy(() => import('../components/GroupCard/GroupCard'));
 
-// TODO: fetch data from backend inside a useEffect
+interface StudyGroup {
+  groupID: number;
+  adminID: number;
+  groupName: string;
+  course: string; // replace classCode/className
+  meetingTime: string; // ISO string
+  meetingType: string; // "IN_PERSON" or "VIRTUAL"
+  location: string;
+  privacy: string; // "PUBLIC" or "PRIVATE"
+}
+
 export default function Home() {
-  // TODO: replace dummy data with actual data from database
-  const dummyGroups = [
-    {
-      groupImage: "/assets/default_group.png",
-      groupName: "The Debug Squad",
-      classCode: "CSCI 104",
-      className: "Data Structures and Object Oriented Design",
-      meetingDayTime: "Monday @ 5PM",
-      meetingType: "In Person",
-      memberCount: 5,
-      groupLead: "Tommy Trojan",
-    },
-    {
-      groupImage: "/assets/default_group.png",
-      groupName: "Algorithmic Avengers",
-      classCode: "CSCI 270",
-      className: "Introduction to Algorithms and Theory of Computing",
-      meetingDayTime: "Wednesday @ 3PM",
-      meetingType: "Virtual",
-      memberCount: 8,
-      groupLead: "John Doe",
-    },
-    {
-      groupImage: "/assets/default_group.png",
-      groupName: "Algo Warriors",
-      classCode: "CSCI 270",
-      className: "Introduction to Algorithms and Theory of Computing",
-      meetingDayTime: "Wednesday @ 3PM",
-      meetingType: "Virtual",
-      memberCount: 8,
-      groupLead: "Jane Doe",
-    },
-    {
-      groupImage: "/assets/default_group.png",
-      groupName: "Software Engineers",
-      classCode: "CSCI 201",
-      className: "Principles of Software Development",
-      meetingDayTime: "Thursday @ 6PM",
-      meetingType: "In Person",
-      memberCount: 6,
-      groupLead: "John Smith",
-    }
-  ];
+  const [groups, setGroups] = useState<StudyGroup[]>([]);
+
+  useEffect(() => {
+    const fetchGroups = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/studygroup/all');
+        const groups = response.data.studyGroups;
+        setGroups(groups); // assuming response is already a list of StudyGroup
+      } catch (error) {
+        const err = error as any;
+        console.error('Failed to fetch study groups:', err.response?.data || err.message);
+      }
+    };
+
+    fetchGroups();
+  }, []);
 
   // add state to control search input
   const [searchValue, setSearchValue] = useState('');
@@ -60,13 +44,13 @@ export default function Home() {
   const [selectedMeetingOption, setSelectedMeetingOption] = useState('');
 
   // array to store search and filter results
-  const filteredGroups = dummyGroups.filter((group) => {
+  const filteredGroups = groups.filter((group) => {
     // groups with name that contains the searched term
     let matchesSearch = (searchValue === '') || group.groupName.toLowerCase().includes(searchValue.toLowerCase());
     // groups with the exact same class code as selected
-    let matchesClass = (selectedClass === '') || (group.classCode === selectedClass);
+    let matchesClass = (selectedClass === '') || (group.course === selectedClass);
     // groups with the same meeting time as selected
-    let matchesTime = (selectedTime === '') || group.meetingDayTime.toLowerCase().includes(selectedTime.toLowerCase());
+    let matchesTime = (selectedTime === '') || group.meetingTime.toLowerCase().includes(selectedTime.toLowerCase());
     // groups with the exact same meeting option as selected
     let matchesMeetingOption = (selectedMeetingOption === '') || (group.meetingType.toLowerCase() === selectedMeetingOption.toLowerCase());
 
@@ -137,14 +121,12 @@ export default function Home() {
             {filteredGroups.map((group, index) => (
               <GroupCard
                 key={index}
-                groupImage={group.groupImage}
                 groupName={group.groupName}
-                classCode={group.classCode}
-                className={group.className}
-                meetingDayTime={group.meetingDayTime}
+                course={group.course}
+                meetingTime={group.meetingTime}
                 meetingType={group.meetingType}
-                memberCount={group.memberCount}
-                groupLead={group.groupLead}
+                location={group.location}
+                privacy={group.privacy}
               />
             ))}
           </div>

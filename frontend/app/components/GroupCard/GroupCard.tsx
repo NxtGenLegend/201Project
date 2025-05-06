@@ -1,27 +1,24 @@
 import React from 'react';
 import './GroupCard.css';
 import { FiCalendar, FiMapPin, FiUser } from 'react-icons/fi';
+import groupImage from '../../../public/assets/default_group.png'
 
 interface GroupCardProps {
-  groupImage: string;
   groupName: string;
-  classCode: string;
-  className: string;
-  meetingDayTime: string;
-  meetingType: string;
-  memberCount: number;
-  groupLead: string;
+  course: string;
+  meetingTime: string;
+  meetingType: string; // "IN_PERSON" or "VIRTUAL"
+  location: string;
+  privacy: string; // "PUBLIC" or "PRIVATE"
 }
 
 const GroupCard: React.FC<GroupCardProps> = ({
-  groupImage,
   groupName,
-  classCode,
-  className,
-  meetingDayTime,
+  course,
+  meetingTime,
   meetingType,
-  memberCount,
-  groupLead,
+  location,
+  privacy
 }) => {
   return (
     <div className="group-card">
@@ -29,12 +26,12 @@ const GroupCard: React.FC<GroupCardProps> = ({
 
       <div className="group-info">
         <h3 className="group-name">{groupName}</h3>
-        <p className="class-name">{classCode} - {className}</p>
+        <p className="class-name">{course}</p>
 
         <div className="group-details">
           <div className="detail-row">
             <FiCalendar className="detail-icon" />
-            <span>{meetingDayTime}</span>
+            <span>{meetingTime}</span>
           </div>
           <div className="detail-row">
             <FiMapPin className="detail-icon" />
@@ -42,12 +39,12 @@ const GroupCard: React.FC<GroupCardProps> = ({
           </div>
           <div className="detail-row">
             <FiUser className="detail-icon" />
-            <span>{memberCount} members</span>
+            <span>Meet at {location}</span>
           </div>
         </div>
 
         <div className="group-footer">
-          <span className="created-by">Created by {groupLead}</span>
+          {/* <span className="created-by">Created by {}</span> */}
           <button className="explore-button">Explore</button>
         </div>
       </div>
