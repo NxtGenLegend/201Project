@@ -19,7 +19,7 @@ mvn clean spring-boot:run
 
 ## Connecting to the AWS MySQL Database
 
-To access the MySQL database via terminal:
+Since we are no longer using MySQL, if you want to access the MySQL database via terminal:
 
 ```
 mysql -u groupuser -p -h 3.148.188.152 -P 3306
