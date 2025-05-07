@@ -4,6 +4,7 @@ import com.study_group_matcher.db.StudyGroupDBHelper;
 import com.study_group_matcher.model.MeetingType;
 import com.study_group_matcher.model.Privacy;
 import com.study_group_matcher.model.StudyGroup;
+import com.study_group_matcher.model.User;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -70,12 +71,40 @@ public class StudyGroupController {
      */
     @GetMapping("/{groupID}")
     public Map<String, Object> getStudyGroup(@PathVariable int groupID) {
+        //Stores SQL response body
         Map<String, Object> response = new HashMap<>();
+        
         try {
+            //Fetch study group object by Id from db
             StudyGroup group = StudyGroupDBHelper.getStudyGroupByID(groupID);
+
             if (group != null) {
+                //Fetch users in the group using Helper funciton with group Id
+                List<User> members = StudyGroupDBHelper.getUsersForGroup(groupID);
+
+                //Make a studyGroup object to return to front end
+                Map<String, Object> groupData = new HashMap<>();
+                groupData.put("groupID", group.getGroupID());
+                groupData.put("adminID", group.getAdminID());
+                groupData.put("groupName", group.getGroupName());
+                groupData.put("course", group.getCourse());
+                groupData.put("meetingTime", group.getMeetingTime().toString());
+                groupData.put("meetingType", group.getMeetingType().toString());
+                groupData.put("location", group.getLocation());
+                groupData.put("privacy", group.getPrivacy().toString());
+
+                //Searches through list of members, stores members names
+                groupData.put("nameOfMembers", members.stream()
+                    .map(m -> m.getFirstName() + " " + m.getLastName())
+                    .toList());
+
+                //Placeholder for majors and years 
+                groupData.put("memberMajors", members.stream().map(m -> "Undeclared").toList());
+                groupData.put("memberYears", members.stream().map(m -> "Unknown").toList());
+
+                // Final response
                 response.put("success", true);
-                response.put("studyGroup", group);
+                response.put("studyGroup", groupData);
             } else {
                 response.put("success", false);
                 response.put("message", "Study group not found with ID: " + groupID);
@@ -84,8 +113,9 @@ public class StudyGroupController {
             response.put("success", false);
             response.put("message", "Error retrieving study group: " + e.getMessage());
         }
+
         return response;
-    }
+}
 
     /*
      * I: None

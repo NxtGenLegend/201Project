@@ -38,7 +38,7 @@ const Header = () => {
           <FiSearch /> Search Groups
         </button>
 
-        <button onClick={() => {navigate('/createStudyGroup')}} className={`header-tab ${currentPath === '/create' ? 'selected' : ''}`} >
+        <button onClick={() => {navigate('/createStudyGroup')}} className={`header-tab ${currentPath.startsWith('/create') ? 'selected' : ''}`}>
           <FiPlus /> Create Group
         </button>
 
