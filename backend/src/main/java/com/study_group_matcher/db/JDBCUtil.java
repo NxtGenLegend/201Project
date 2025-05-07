@@ -5,9 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class JDBCUtil {
-	private static final String URL = "jdbc:mysql://localhost/study_group_matcher";
-    private static final String USER = "root";
-    private static final String PASSWORD = "1lliciuM1031";
+	private static final String URL = "jdbc:mysql://3.148.188.152:3306/STUDY_GROUP_MATCHER";
+    private static final String USER = "groupuser";
+    private static final String PASSWORD = "papa201!";
 
     // load MySQL driver before asking for connections to the database
     static {
