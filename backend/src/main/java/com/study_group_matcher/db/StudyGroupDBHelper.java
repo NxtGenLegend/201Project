@@ -12,10 +12,10 @@ import java.util.List;
 public class StudyGroupDBHelper {
 
     /*
-    * I: StudyGroup object with initialized fields except groupID
-    * P: Insert a new row into the StudyGroup table
-    * O: Returns the auto-generated groupID if successful; -1 if insertion failed
-    */
+     * I: StudyGroup object with initialized fields except groupID
+     * P: Insert a new row into the StudyGroup table
+     * O: Returns the auto-generated groupID if successful; -1 if insertion failed
+     */
     public static int insertStudyGroup(StudyGroup group) {
         String query = "INSERT INTO StudyGroup (admin_id, group_name, course, meeting_time, meeting_type, location, privacy, max_members, current_member_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         Connection conn = null;
@@ -34,7 +34,7 @@ public class StudyGroupDBHelper {
             ps.setString(6, group.getLocation());
             ps.setString(7, group.getPrivacy().toString());
             ps.setInt(8, 50); // default max_members
-            ps.setInt(9, 1);  // admin is initial member
+            ps.setInt(9, 1); // admin is initial member
 
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 0) {
@@ -59,10 +59,10 @@ public class StudyGroupDBHelper {
     }
 
     /*
-    * I: Unique group ID
-    * P: Retrieve that StudyGroup from the database
-    * O: Returns a StudyGroup object if found; otherwise null
-    */
+     * I: Unique group ID
+     * P: Retrieve that StudyGroup from the database
+     * O: Returns a StudyGroup object if found; otherwise null
+     */
     public static StudyGroup getStudyGroupByID(int groupID) {
         String query = "SELECT * FROM StudyGroup WHERE study_group_id = ?";
         Connection conn = null;
@@ -93,8 +93,7 @@ public class StudyGroupDBHelper {
                         meetingTime,
                         meetingType,
                         location,
-                        privacy
-                );
+                        privacy);
             }
         } catch (SQLException e) {
             System.err.println("Error retrieving StudyGroup: " + e.getMessage());
@@ -108,10 +107,10 @@ public class StudyGroupDBHelper {
     }
 
     /*
-    * I: None
-    * P: Retrieve all StudyGroups
-    * O: List of StudyGroup objects
-    */
+     * I: None
+     * P: Retrieve all StudyGroups
+     * O: List of StudyGroup objects
+     */
     public static List<StudyGroup> getAllStudyGroups() {
         String query = "SELECT * FROM StudyGroup";
         List<StudyGroup> groups = new ArrayList<>();
@@ -142,8 +141,7 @@ public class StudyGroupDBHelper {
                         meetingTime,
                         meetingType,
                         location,
-                        privacy
-                );
+                        privacy);
                 groups.add(group);
             }
         } catch (SQLException e) {
@@ -158,9 +156,9 @@ public class StudyGroupDBHelper {
     }
 
     /*
-    * I: Unique group ID to delete
-    * P: Delete StudyGroup from the database
-    */
+     * I: Unique group ID to delete
+     * P: Delete StudyGroup from the database
+     */
     public static void deleteStudyGroup(int groupID) {
         String query = "DELETE FROM StudyGroup WHERE study_group_id = ?";
         Connection conn = null;
@@ -178,4 +176,58 @@ public class StudyGroupDBHelper {
             JDBCUtil.close(conn);
         }
     }
+
+    public static List<StudyGroup> getStudyGroupsForUser(int userID) {
+        String query = """
+                    SELECT sg.*, u.display_name AS group_lead
+                    FROM StudyGroup sg
+                    JOIN StudyGroupMembers sgm ON sg.study_group_id = sgm.study_group_id
+                    JOIN Users u ON sg.admin_id = u.user_id
+                    WHERE sgm.user_id = ?
+                """;
+
+        List<StudyGroup> groups = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = JDBCUtil.getConnection();
+            stmt = conn.prepareStatement(query);
+            stmt.setInt(1, userID);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int groupID = rs.getInt("study_group_id");
+                int adminID = rs.getInt("admin_id");
+                String groupName = rs.getString("group_name");
+                String course = rs.getString("course");
+                LocalDateTime meetingTime = rs.getTimestamp("meeting_time").toLocalDateTime();
+                MeetingType meetingType = MeetingType.valueOf(rs.getString("meeting_type"));
+                String location = rs.getString("location");
+                Privacy privacy = Privacy.valueOf(rs.getString("privacy"));
+
+                StudyGroup group = new StudyGroup(
+                        groupID,
+                        adminID,
+                        groupName,
+                        course,
+                        meetingTime,
+                        meetingType,
+                        location,
+                        privacy);
+
+                groups.add(group);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving StudyGroups for user: " + e.getMessage());
+        } finally {
+            JDBCUtil.close(rs);
+            JDBCUtil.close(stmt);
+            JDBCUtil.close(conn);
+        }
+
+        return groups;
+    }
+
 }

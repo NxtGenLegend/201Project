@@ -18,7 +18,8 @@ import java.util.Map;
 public class StudyGroupController {
 
     /*
-     * I: JSON payload with adminID, groupName, course, meetingTime, meetingType, location, privacy
+     * I: JSON payload with adminID, groupName, course, meetingTime, meetingType,
+     * location, privacy
      * P: Parse input and create a new StudyGroup, store in DB, return group ID
      * O: JSON response with status, message, and new groupID
      */
@@ -43,8 +44,7 @@ public class StudyGroupController {
                     meetingTime,
                     meetingType,
                     location,
-                    privacy
-            );
+                    privacy);
 
             int generatedGroupID = StudyGroupDBHelper.insertStudyGroup(group);
 
@@ -129,6 +129,21 @@ public class StudyGroupController {
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", "Error deleting study group: " + e.getMessage());
+        }
+        return response;
+    }
+
+    @GetMapping("/user/{userID}/groups")
+    public Map<String, Object> getStudyGroupsForUser(@PathVariable int userID) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            List<StudyGroup> groups = StudyGroupDBHelper.getStudyGroupsForUser(userID);
+            response.put("success", true);
+            response.put("studyGroups", groups);
+            response.put("count", groups.size());
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Error retrieving user's study groups: " + e.getMessage());
         }
         return response;
     }
