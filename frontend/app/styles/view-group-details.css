@@ -58,7 +58,7 @@ body, html {
 }
 
 .group-members-container{
-    width: 900px; 
+    width: 1050px; 
     border-radius: 13px; 
     padding-top: 20px;
     padding-left: 20px;
@@ -92,20 +92,25 @@ body, html {
     padding-left: 10px;
     border-radius: 13px;
     color: black; 
-    border: 2px solid #000080;
+    /* border: 2px solid #000080; */
     word-wrap: break-word;   
+    color: white; 
+    background-color: #064db8;
 }
 .year-col {
     flex: 1 1 0;               
     padding: 0.5rem 1rem;
     border-radius: 13px;
-    border: 2px solid #770E04;
+    /* border: 2px solid #770E04; */
     color: black;
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
     padding-right: 30px;
+    background-color: #770E04;
+    color: white; 
+
 }
   
 .member-col {
@@ -149,5 +154,61 @@ body, html {
   }
   
   .banner-button:hover {
-    background-color: #5848c2;
+    background-color: #0047AB;
   }
+
+  .choice-button.selected-button {
+    background-color: #0047AB;
+    color: white !important;
+    /* border: 1px solid #770E04; */
+    height: 40px; 
+}
+
+.name-col{
+    font-weight: bold;
+}
+
+.popup-input {
+    width: 350px; 
+    border-radius: 13px; 
+    padding-top: 20px;
+    padding-left: 20px;
+    padding-bottom: 20px;
+    margin-top: 10px;
+    background-color: white;
+    color: black; 
+    padding-right: 30px; 
+    height: auto; 
+    
+
+}
+
+.popup-container{
+    position: fixed; /* sets container to appear in the middle of screen */    
+    top: 0;
+    left: 0;
+    width: 100vw; /* full screen width */
+    height: 100vh; /* full screen height */
+    background-color: rgba(0, 0, 0, 0.3); /* makes the background blurry */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* z-index: 1000;    */
+
+}
+
+.message-text{
+    border-radius: 13px;
+    height: 30px; 
+    width: 500px;
+    padding-left: 10px;
+    background-color: #eae6e6;
+    margin-top: 10px;
+}
+
+.message-text:focus{
+    border: 2px solid #0047AB;
+    outline: none; 
+    background-color: white;
+    outline: none;
+}
