@@ -23,32 +23,29 @@ const Header = () => {
       </div>
 
       <div className="header-center">
-        {/* TODO: change the onClick navigation once the page is done */}
-        {
-          isLoggedIn ? (
-            <button onClick={() => {navigate('/dashboard')}} className={`header-tab ${currentPath === '/dashboard' ? 'selected' : ''}`}>
-              <FiHome /> Dashboard
-            </button>
-          ) : (
-            <></>
-          )
-        }
-        
         <button onClick={() => {navigate('/')}} className={`header-tab ${currentPath === '/' ? 'selected' : ''}`}>
           <FiSearch /> Search Groups
         </button>
-
-        <button onClick={() => {navigate('/createStudyGroup')}} className={`header-tab ${currentPath === '/create' ? 'selected' : ''}`} >
-          <FiPlus /> Create Group
-        </button>
-
-        <button onClick={() => {navigate('/inbox');}} className={`header-tab ${currentPath === '/inbox' ? 'selected' : ''}`} >
-          <FiMessageCircle /> Inbox
-        </button>
+        {
+          isLoggedIn ? (
+            <>
+              <button onClick={() => {navigate('/dashboard')}} className={`header-tab ${currentPath === '/dashboard' ? 'selected' : ''}`}>
+                <FiHome /> Dashboard
+              </button>
+              <button onClick={() => {navigate('/createStudyGroup')}} className={`header-tab ${currentPath === '/createStudyGroup' ? 'selected' : ''}`} >
+                <FiPlus /> Create Group
+              </button>
+              <button onClick={() => {navigate('/inbox');}} className={`header-tab ${currentPath === '/inbox' ? 'selected' : ''}`} >
+                <FiMessageCircle /> Inbox
+              </button>
+          </>
+          ) : (
+            <></>
+          )
+    }
       </div>
 
       <div className="header-right">
-        {/* TODO: actually log user out once the backend is done */}
         {
           isLoggedIn ? (
             <>
