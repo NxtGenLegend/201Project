@@ -1,9 +1,46 @@
 # 201Project
 
-To start the frontend development server, type `npm run dev` in console.
-To start the backend server, go to the `backend` folder and run `mvn clean spring-boot:run`.
+## Running the Project
 
-Connect to the AWS MySQL database
-`mysql -u groupuser -p -h 3.148.188.152 -P 3306`
+### Frontend
 
-If it doesn't recognize the `mysql` command, run `brew install mysql`.
+```
+npm run dev
+```
+
+### Backend
+
+```
+cd backend
+mvn clean spring-boot:run
+```
+
+---
+
+## 🗄Connecting to the AWS MySQL Database
+
+To access the MySQL database via terminal:
+
+```
+mysql -u groupuser -p -h 3.148.188.152 -P 3306
+```
+
+> When prompted, enter the password: `papa201!`
+
+If your terminal does not recognize the `mysql` command, install MySQL with:
+
+```
+brew install mysql
+```
+
+---
+
+## Example SQL Commands
+
+Once logged in, you can run:
+
+```
+SHOW DATABASES;
+USE STUDY_GROUP_MATCHER;
+SELECT * FROM Users;
+```
