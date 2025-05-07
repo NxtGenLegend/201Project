@@ -17,7 +17,7 @@ mvn clean spring-boot:run
 
 ---
 
-## 🗄Connecting to the AWS MySQL Database
+## Connecting to the AWS MySQL Database
 
 To access the MySQL database via terminal:
 
