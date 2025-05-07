@@ -75,7 +75,7 @@ export default function StudyCreationForm() {
           }
         );
 
-        const inviteData = await inviteRes.jgot on();
+        const inviteData = await inviteRes.json();
 
         if (inviteRes.ok) {
           alert("Invitation sent successfully.");
