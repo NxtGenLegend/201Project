@@ -1,6 +1,7 @@
 import '../styles/Home.css';
 import React, { Suspense, useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 // import ui components
 const Header = React.lazy(() => import('../components/Header/Header'));
@@ -19,7 +20,7 @@ interface StudyGroup {
 
 export default function Home() {
   const [groups, setGroups] = useState<StudyGroup[]>([]);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchGroups = async () => {
       try {
@@ -118,7 +119,14 @@ export default function Home() {
         {/* group cards */}
         <div className="group-cards-wrapper">
           <div className="group-cards-container">
+            {/* reroutes user to see details page based on group */}
             {filteredGroups.map((group, index) => (
+              <div
+               key={index}
+               //passes group id 
+               onClick={() => navigate(`/viewDetails?id=${group.groupID}`)}
+               style={{ cursor: "pointer" }}
+                >
               <GroupCard
                 key={index}
                 groupName={group.groupName}
@@ -128,6 +136,7 @@ export default function Home() {
                 location={group.location}
                 privacy={group.privacy}
               />
+               </div>
             ))}
           </div>
         </div>

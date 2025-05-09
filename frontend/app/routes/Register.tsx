@@ -13,20 +13,21 @@ export default function Register() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-        const response = await axios.get('http://localhost:8080/api/users/register', {
-            params: {
-                first_name: firstName,
-                last_name: lastName,
-                username: username,
-                password: password
-            }
-        });
-        const data = response.data;
-        console.log(data);
+      const response = await axios.post('http://localhost:8080/api/users/register', {
+        first_name: firstName,
+        last_name: lastName,
+        username: username,
+        password: password,
+      });
+      const data = response.data;
+      if (data.success) {
+        localStorage.setItem('username', username);
+        localStorage.setItem('isLoggedIn', "true");
+        window.location.href = '/dashboard';
+      }
     } catch (err) {
-        console.error('error:', err);
+      console.error('error:', err);
     }
-    console.log(firstName, lastName, username, password);
   };
 
   return (

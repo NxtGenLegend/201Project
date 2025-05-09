@@ -1,24 +1,32 @@
 import React, { Suspense, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
+import axios from "axios";
 
 const Header = React.lazy(() => import("../components/Header/Header"));
 
 export default function Login() {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Email:", email);
-    console.log("Password:", password);
-    //Assuming success
-    localStorage.setItem('email', email);
-    localStorage.setItem('isLoggedIn', "true");
-    navigate('/dashboard');
+    try {
+      const response = await axios.post('http://localhost:8080/api/users/login', {
+        username: username,
+        password: password,
+      });
+      const data = response.data;
+      if (data.success) {
+        localStorage.setItem('username', username);
+        localStorage.setItem('isLoggedIn', "true");
+        window.location.href = '/dashboard';
+      }
+    } catch (err) {
+      console.error('error:', err);
+    }
   };
 
   return (
@@ -29,12 +37,12 @@ export default function Login() {
           <h1 className="login-title">Login</h1>
           <form onSubmit={handleSubmit} className="login-form">
             <div>
-              <label htmlFor="email">Email</label>
+              <label htmlFor="username">Username</label>
               <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                id="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 className="login-input"
                 required
               />

@@ -3,6 +3,7 @@ package com.study_group_matcher.db;
 import com.study_group_matcher.model.StudyGroup;
 import com.study_group_matcher.model.MeetingType;
 import com.study_group_matcher.model.Privacy;
+import com.study_group_matcher.model.User; 
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -228,6 +229,49 @@ public class StudyGroupDBHelper {
         }
 
         return groups;
+    }
+
+
+    /*
+    * Helper Function: 
+    * Uses the group Id to get members belong to study group
+    * to fetch member names from userId members
+    */
+    public static List<User> getUsersForGroup(int groupID) {
+        //Stores members foudn in study group
+        List<User> members = new ArrayList<>();
+
+        //SQL Query to get from User Tables the user's namme from their userID
+        String query =
+        "SELECT u.user_id, u.username, u.password, u.first_name, u.last_name " +
+        "FROM StudyGroupMembers sgm " +
+        "JOIN Users u ON sgm.user_id = u.user_id " +
+        "WHERE sgm.study_group_id = ?";
+
+        //Sql Connection
+        try (Connection conn = JDBCUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setInt(1, groupID);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    User user = new User(
+                        rs.getInt("user_id"),
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name")
+                    );
+                    //Stores all user information 
+                    members.add(user);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching users for group: " + e.getMessage());
+        }
+
+        //return the list of members in specified study group
+        return members;
     }
 
 }

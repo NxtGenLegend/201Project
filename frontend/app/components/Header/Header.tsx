@@ -12,7 +12,7 @@ const Header = () => {
   const location = useLocation();
   const currentPath = location.pathname;
 
-  const email = localStorage.getItem('email') || '';
+  const username = localStorage.getItem('username') || '';
   const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
 
   return (
@@ -50,7 +50,7 @@ const Header = () => {
           isLoggedIn ? (
             <>
               <FiUser />
-              <span>Hi, {email}</span>
+              <span>Hi, {username}</span>
               <Button onClick={() => {localStorage.setItem('email', ""); localStorage.setItem('isLoggedIn', "false"); navigate("/");}}>
                 Log out
               </Button>

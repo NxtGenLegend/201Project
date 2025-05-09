@@ -10,6 +10,7 @@ import com.study_group_matcher.model.User;
 import com.study_group_matcher.db.JDBCUtil;
 import com.study_group_matcher.db.UserDBHelper;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
