@@ -27,6 +27,9 @@ export default function Login() {
     } catch (err) {
       console.error('error:', err);
     }
+    localStorage.setItem('username', username);
+        localStorage.setItem('isLoggedIn', "true");
+        window.location.href = '/dashboard';
   };
 
   return (

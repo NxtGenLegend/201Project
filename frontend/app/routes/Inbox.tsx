@@ -1,5 +1,6 @@
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import "../styles/Inbox.css";
+import axios from "axios";
 
 const Header = React.lazy(() => import("../components/Header/Header"));
 
@@ -13,44 +14,32 @@ type Message = {
   readState: boolean;
 };
 
-// Sample messages data
-// To be pulled from an API later
-const sampleMessages: Message[] = [
-  {
-    id: 1,
-    timestamp: "2025-04-30 10:00 AM",
-    subject: "Meeting Reminder",
-    content: "Don't forget about the meeting at 3 PM today.",
-    sender: "manager@example.com",
-    recipient: "you@example.com",
-    readState: false,
-  },
-  {
-    id: 2,
-    timestamp: "2025-04-29 2:15 PM",
-    subject: "Project Update",
-    content: "The project deadline has been extended to next Friday.",
-    sender: "teamlead@example.com",
-    recipient: "you@example.com",
-    readState: true,
-  },
-  {
-    id: 3,
-    timestamp: "2025-04-28 9:45 AM",
-    subject: "Welcome to the Team!",
-    content: "We're excited to have you on board. Let us know if you need anything.",
-    sender: "hr@example.com",
-    recipient: "you@example.com",
-    readState: true,
-  },
-];
-
 export default function Inbox() {
+  const [messages, setMessages] = useState<Message[]>([]);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
 
-  const handleSelectMessage = (message: Message) => {
+  const handleSelectMessage = (message: any) => {
     setSelectedMessage(message);
   };
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        let username = localStorage.getItem('username');
+        const response = await axios.get(`http://localhost:8080/api/inbox/${username}`);
+        const data = response.data;
+        if (data.success) {
+          setMessages(data.messages);
+          console.log(data.messages);
+        } else {
+          console.error("Failed to fetch messages");
+        }
+      } catch (err) {
+        console.error('error:', err);
+      }
+    };
+    fetchMessages();
+  }, []);
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -59,7 +48,7 @@ export default function Inbox() {
         <div className="inbox-menu">
           <h2>Messages</h2>
           <ul>
-            {sampleMessages.map((message) => (
+            {messages.map((message) => (
               <li
                 key={message.id}
                 className={`message-item ${message.readState ? "read" : "unread"}`}
