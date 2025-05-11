@@ -26,7 +26,7 @@ export default function Inbox() {
     const fetchMessages = async () => {
       try {
         let username = localStorage.getItem('username');
-        const response = await axios.get(`http://localhost:8080/api/inbox/${username}`);
+        const response = await axios.get(`http://localhost:8080/api/inbox/by-username/${username}`);
         const data = response.data;
         if (data.success) {
           setMessages(data.messages);
@@ -35,6 +35,9 @@ export default function Inbox() {
           console.error("Failed to fetch messages");
         }
       } catch (err) {
+        if (axios.isAxiosError(err) && err.response?.data === "Inbox is empty.") {
+          return;          
+        } 
         console.error('error:', err);
       }
     };
@@ -71,7 +74,7 @@ export default function Inbox() {
               <p>{selectedMessage.content}</p>
             </div>
           ) : (
-            <div className="no-message-selected">Select a message to view its details</div>
+            <div className="no-message-selected">No message is selected, or you have no messages.</div>
           )}
         </div>
       </div>

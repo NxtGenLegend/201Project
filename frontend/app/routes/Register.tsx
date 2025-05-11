@@ -20,7 +20,7 @@ export default function Register() {
         password: password,
       });
       const data = response.data;
-      if (data.success) {
+      if (data === "Registration successful") {
         localStorage.setItem('username', username);
         localStorage.setItem('isLoggedIn', "true");
         window.location.href = '/dashboard';

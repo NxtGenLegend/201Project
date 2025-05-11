@@ -38,8 +38,8 @@ public class UserDBHelper {
     }
 
     public void insertUser(User curr) throws SQLException {
-        String sql = "INSERT INTO Users (username, password, first_name, last_name, last_login_time) " +
-                "VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Users (username, password, first_name, last_name) " +
+                "VALUES (?, ?, ?, ?)";
 
         String hashedPass = hashPassword(curr.getPassword());
         LocalDateTime loginTime = LocalDateTime.now();
@@ -49,7 +49,6 @@ public class UserDBHelper {
             stmt.setString(2, hashedPass);
             stmt.setString(3, curr.getFirstName());
             stmt.setString(4, curr.getLastName());
-            stmt.setTimestamp(5, Timestamp.valueOf(loginTime));
             stmt.executeUpdate();
 
             try (ResultSet rs = stmt.getGeneratedKeys()) {
