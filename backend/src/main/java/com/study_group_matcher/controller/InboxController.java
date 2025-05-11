@@ -52,7 +52,7 @@ public class InboxController {
         List<InboxDTO> responseList = new ArrayList<>();
     
         for (Inbox inbox : inboxEntries) {
-            responseList.add(new InboxDTO(inbox.getMessageID(), inbox.getInvitationID()));
+            responseList.add(new InboxDTO(inbox.getMessageID(), inbox.getInvitationID(), inbox.getMessageContents()));
         }
     
         if (responseList.isEmpty()) {
