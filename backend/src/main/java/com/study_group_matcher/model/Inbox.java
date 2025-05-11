@@ -57,5 +57,4 @@ public class Inbox {
     public void setInvitationID(long invitation_id) {
         this.invitation_id = invitation_id;
     }
-    
 }

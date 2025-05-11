@@ -43,20 +43,20 @@ public class InboxDBHelper {
         }
     }
 
-    // Get all the inboxes that belong to a specific user based on their ID
-    public List<Inbox> getAll(long user_id) {
+    // Get all the inboxes that belong to a specific user based on their username
+    public List<Inbox> getAll(String username) {
         List<Inbox> inboxList = new ArrayList<>();
-        String query = "SELECT * FROM Inbox WHERE user_id = ?";
+        String query = "SELECT i.* FROM Inbox i JOIN Users u ON i.user_id = u.user_id WHERE u.username = ?";
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
-
+    
         try {
             conn = JDBCUtil.getConnection();
             stmt = conn.prepareStatement(query);
-            stmt.setLong(1, user_id);
+            stmt.setString(1, username); 
             rs = stmt.executeQuery();
-
+    
             while (rs.next()) {
                 inboxList.add(makeInbox(rs));
             }
@@ -66,10 +66,10 @@ public class InboxDBHelper {
             closeResultSet(rs);
             closeConnection(stmt, conn);
         }
-
+    
         return inboxList;
     }
-    
+
     // Create an Inbox object from a ResultSet
     private Inbox makeInbox(ResultSet rs) {
         try {
