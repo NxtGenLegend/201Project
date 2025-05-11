@@ -34,7 +34,7 @@ public class InboxDTO {
         this.invitationId = invitationId;
     }
 
-    public void setContent(String conetnt) {
+    public void setContent(String content) {
         this.content = content;
     }
 }
