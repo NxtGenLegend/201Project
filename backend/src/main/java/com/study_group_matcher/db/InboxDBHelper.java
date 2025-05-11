@@ -43,10 +43,9 @@ public class InboxDBHelper {
         }
     }
 
-    // Get all the inboxes that belong to a specific user based on their username
-    public List<Inbox> getAll(String username) {
-        List<Inbox> inboxList = new ArrayList<>();
-        String query = "SELECT i.* FROM Inbox i JOIN Users u ON i.user_id = u.user_id WHERE u.username = ?";
+   public List<InboxDTO> getAll(String username) {
+        List<InboxDTO> inboxList = new ArrayList<>();
+        String query = "SELECT i.message_id, i.invitation_id, m.message_body FROM Inbox i LEFT JOIN Message m ON i.message_id = m.message_id JOIN Users u ON i.user_id = u.user_id WHERE u.username = ?";
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -58,7 +57,12 @@ public class InboxDBHelper {
             rs = stmt.executeQuery();
     
             while (rs.next()) {
-                inboxList.add(makeInbox(rs));
+                Long messageId = rs.getLong("message_id");
+                Long invitationId = rs.getLong("invitation_id");
+                String messageBody = rs.getString("message_body");
+    
+                // Create the InboxDTO with message content
+                inboxList.add(new InboxDTO(messageId, invitationId, messageBody));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -68,7 +72,8 @@ public class InboxDBHelper {
         }
     
         return inboxList;
-    }
+}
+
 
     // Create an Inbox object from a ResultSet
     private Inbox makeInbox(ResultSet rs) {
