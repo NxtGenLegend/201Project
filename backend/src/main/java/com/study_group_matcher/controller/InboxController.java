@@ -45,21 +45,21 @@ public class InboxController {
         }
     }
 
-    // Get all the message or invitation id that pertains to a certain user
     @GetMapping("/by-username/{username}")
     public ResponseEntity<?> getAll(@PathVariable String username) {
-        List<Inbox> inboxEntries = inboxDBHelper.getAll(username);
         List<InboxDTO> responseList = new ArrayList<>();
+        List<InboxDTO> inboxEntries = inboxDBHelper.getAll(username);
     
-        for (Inbox inbox : inboxEntries) {
-            responseList.add(new InboxDTO(inbox.getMessageID(), inbox.getInvitationID(), inbox.getMessageContents()));
+        for (InboxDTO inbox : inboxEntries) {
+            responseList.add(new InboxDTO(inbox.getMessageId(), inbox.getInvitationId(), inbox.getMessageContents()));
         }
-    
+        
         if (responseList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Inbox is empty.");
         }
-    
+        
         return ResponseEntity.ok(responseList);
     }
+
 }
 
