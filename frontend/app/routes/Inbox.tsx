@@ -28,12 +28,9 @@ export default function Inbox() {
         let username = localStorage.getItem('username');
         const response = await axios.get(`http://localhost:8080/api/inbox/by-username/${username}`);
         const data = response.data;
-        if (data.success) {
-          setMessages(data.messages);
-          console.log(data.messages);
-        } else {
-          console.error("Failed to fetch messages");
-        }
+          // setMessages(data);
+        console.log(data);
+        
       } catch (err) {
         if (axios.isAxiosError(err) && err.response?.data === "Inbox is empty.") {
           return;          
