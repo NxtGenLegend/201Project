@@ -5,6 +5,8 @@ import com.study_group_matcher.model.MeetingType;
 import com.study_group_matcher.model.Privacy;
 import com.study_group_matcher.model.StudyGroup;
 import com.study_group_matcher.model.User;
+import com.study_group_matcher.db.JDBCUtil;
+import com.study_group_matcher.db.UserDBHelper;
 
 import org.springframework.web.bind.annotation.*;
 

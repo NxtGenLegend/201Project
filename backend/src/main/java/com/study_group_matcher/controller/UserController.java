@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
+import com.study_group_matcher.model.User;
 
 
 @CrossOrigin(origins = "*")
