@@ -1,7 +1,6 @@
 package com.study_group_matcher.controller;
 
 import com.study_group_matcher.model.Inbox;
-import com.study_group_matcher.model.User;
 import com.study_group_matcher.db.InboxDBHelper;
 import com.study_group_matcher.db.JDBCUtil;
 import com.study_group_matcher.model.InboxDTO;
