@@ -51,7 +51,7 @@ public class InboxController {
         List<InboxDTO> inboxEntries = inboxDBHelper.getAll(username);
     
         for (InboxDTO inbox : inboxEntries) {
-            responseList.add(new InboxDTO(inbox.getMessageId(), inbox.getInvitationId(), inbox.getMessageContents()));
+            responseList.add(new InboxDTO(inbox.getMessageId(), inbox.getInvitationId(), inbox.getContent()));
         }
         
         if (responseList.isEmpty()) {
