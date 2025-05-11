@@ -6,14 +6,16 @@ public class Inbox {
     private long sender_id;
     private long message_id;
     private long invitation_id;
+    private String username; // Fixed typo
 
     public Inbox() {}
 
-    public Inbox(long user_id, long sender_id, long message_id, long invitation_id) {
+    public Inbox(long user_id, long sender_id, long message_id, long invitation_id, String username) {
         this.user_id = user_id;
         this.sender_id = sender_id;
         this.message_id = message_id;
         this.invitation_id = invitation_id;
+        this.username = username; // Added assignment
     }
 
     // Getters
@@ -37,6 +39,10 @@ public class Inbox {
         return invitation_id;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     // Setters
     public void setInboxID(long inbox_id) {
         this.inbox_id = inbox_id;
@@ -57,5 +63,8 @@ public class Inbox {
     public void setInvitationID(long invitation_id) {
         this.invitation_id = invitation_id;
     }
-    
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }
