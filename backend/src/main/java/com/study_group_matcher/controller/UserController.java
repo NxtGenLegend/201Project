@@ -6,9 +6,7 @@ import org.springframework.http.ResponseEntity;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
-import com.study_group_matcher.model.User;
-import com.study_group_matcher.db.JDBCUtil;
-import com.study_group_matcher.db.UserDBHelper;
+
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -28,15 +26,23 @@ public class UserController {
         String firstName = request.get("first_name");
         String lastName = request.get("last_name");
         
-        // Validation would need to be manual
         if (username == null || username.isBlank()) {
             return ResponseEntity.badRequest().body("Username is required");
+        }
+        if (password == null || password.isBlank()) {
+            return ResponseEntity.badRequest().body("Password is required");
         }
         
         try (Connection conn = JDBCUtil.getConnection()) {
             UserDBHelper userDBHelper = new UserDBHelper(conn);
             
+            // Check if username exists
+            if (userDBHelper.getUserByUsername(username) != null) {
+                return ResponseEntity.badRequest().body("Username already exists");
+            }
+            
             User newUser = new User();
+            newUser.setUsername(username);  // THIS WAS MISSING LMAO WHOOPS
             newUser.setPassword(password);
             newUser.setFirstName(firstName);
             newUser.setLastName(lastName);
@@ -44,7 +50,9 @@ public class UserController {
             userDBHelper.insertUser(newUser);
             return ResponseEntity.ok("Registration successful");
         } catch (SQLException e) {
-            return ResponseEntity.internalServerError().body("Registration failed");
+            e.printStackTrace();  // Log the error for debugging
+            return ResponseEntity.internalServerError()
+                .body("Registration failed: " + e.getMessage());
         }
     }
     
@@ -66,3 +74,5 @@ public class UserController {
         }
     }
 }
+
+
