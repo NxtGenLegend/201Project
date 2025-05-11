@@ -3,13 +3,13 @@ package com.study_group_matcher.model;
 public class InboxDTO {
     private Long messageId;
     private Long invitationId;
-    private String conetnt; 
+    private String content; 
 
     // All-args constructor (from @AllArgsConstructor)
-    public InboxDTO(Long messageId, Long invitationId, String conetnt) {
+    public InboxDTO(Long messageId, Long invitationId, String content) {
         this.messageId = messageId;
         this.invitationId = invitationId;
-        this.conetnt = conetnt;
+        this.content = content;
     }
 
     // Getters
@@ -21,8 +21,8 @@ public class InboxDTO {
         return invitationId;
     }
 
-    public String getContents() {
-        return conetnt;
+    public String getContent() {
+        return content;
     }
 
     // Setters
@@ -34,7 +34,7 @@ public class InboxDTO {
         this.invitationId = invitationId;
     }
 
-    public void setContents(String conetnt) {
-        this.conetnt = conetnt;
+    public void setContent(String conetnt) {
+        this.content = content;
     }
 }
