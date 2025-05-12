@@ -43,37 +43,41 @@ public class InboxDBHelper {
         }
     }
 
-   public List<InboxDTO> getAll(String username) {
-        List<InboxDTO> inboxList = new ArrayList<>();
-        String query = "SELECT i.message_id, i.invitation_id, m.message_body FROM Inbox i LEFT JOIN Message m ON i.message_id = m.message_id JOIN Users u ON i.user_id = u.user_id WHERE u.username = ?";
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-    
-        try {
-            conn = JDBCUtil.getConnection();
-            stmt = conn.prepareStatement(query);
-            stmt.setString(1, username); 
-            rs = stmt.executeQuery();
-    
-            while (rs.next()) {
-                Long messageId = rs.getLong("message_id");
-                Long invitationId = rs.getLong("invitation_id");
-                String messageBody = rs.getString("message_body");
-    
-                // Create the InboxDTO with message content
-                inboxList.add(new InboxDTO(messageId, invitationId, messageBody));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            closeResultSet(rs);
-            closeConnection(stmt, conn);
-        }
-    
-        return inboxList;
-}
+    public List<InboxDTO> getAll(String username) {
+        String sql = "SELECT i.message_id, i.invitation_id, sender.username AS sender_username, " +
+        "m.message_body, m.timestamp AS message_timestamp, " +
+        "inv.study_group_id, sg.group_name, inv.created_at AS invitation_timestamp " +
+        "FROM Inbox i " +
+        "LEFT JOIN Message m ON i.message_id = m.message_id " +
+        "LEFT JOIN Invitations inv ON i.invitation_id = inv.invitation_id " +
+        "LEFT JOIN StudyGroup sg ON inv.study_group_id = sg.study_group_id " +
+        "LEFT JOIN Users sender ON i.sender_id = sender.user_id " +
+        "WHERE i.user_id = (SELECT user_id FROM Users WHERE username = ?)";
+        List<InboxDTO> inboxItems = new ArrayList<>();
 
+        try (Connection conn = dataSource.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, username);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    InboxDTO dto = new InboxDTO();
+                    dto.setMessageId((Long) rs.getObject("message_id"));
+                    dto.setInvitationId((Long) rs.getObject("invitation_id"));
+                    dto.setSender(rs.getString("sender_username"));
+                    dto.setContent(rs.getString("message_body"));
+                    dto.setMessageTime(rs.getTimestamp("message_timestamp"));
+                    dto.setGroupName(rs.getString("group_name"));
+                    dto.setInvitationTime(rs.getTimestamp("invitation_timestamp"));
+                    inboxItems.add(dto);
+                }
+            }
+        } 
+        catch (SQLException e) {
+            e.printStackTrace(); 
+        }
+        return inboxItems;
+    }
 
     // Create an Inbox object from a ResultSet
     private Inbox makeInbox(ResultSet rs) {
