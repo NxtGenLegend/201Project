@@ -47,19 +47,13 @@ public class InboxController {
 
     @GetMapping("/by-username/{username}")
     public ResponseEntity<?> getAll(@PathVariable String username) {
-        List<InboxDTO> responseList = new ArrayList<>();
         List<InboxDTO> inboxEntries = inboxDBHelper.getAll(username);
-    
-        for (InboxDTO inbox : inboxEntries) {
-            responseList.add(new InboxDTO(inbox.getMessageId(), inbox.getInvitationId(), inbox.getContent()));
-        }
-        
-        if (responseList.isEmpty()) {
+
+        if (inboxEntries.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Inbox is empty.");
         }
-        
-        return ResponseEntity.ok(responseList);
-    }
 
+        return ResponseEntity.ok(inboxEntries);
+    }
 }
 
