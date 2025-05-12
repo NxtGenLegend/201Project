@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import com.study_group_matcher.model.Inbox;
+import com.study_group_matcher.model.InboxDTO;
 
 public class InboxDBHelper {
 
