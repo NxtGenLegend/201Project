@@ -67,8 +67,8 @@ public class InboxDBHelper {
                     InboxDTO dto = new InboxDTO(
                         rs.getObject("message_id") != null ? rs.getLong("message_id") : null,
                         rs.getObject("invitation_id") != null ? rs.getLong("invitation_id") : null,
-                        rs.getString("sender_username"),
                         rs.getString("message_body"),
+                        rs.getString("sender_username"),
                         rs.getTimestamp("message_timestamp"),
                         rs.getString("group_name"),
                         rs.getTimestamp("invitation_timestamp")
