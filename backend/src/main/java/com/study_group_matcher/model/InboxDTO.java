@@ -1,6 +1,6 @@
 package com.study_group_matcher.model;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
 
 public class InboxDTO {
     private Long messageId;
@@ -47,7 +47,7 @@ public class InboxDTO {
     }
 
     public Timestamp getInvitationTime() {
-        retrun invitationTime;
+        return invitationTime;
     }
 
     // Setters
