@@ -29,19 +29,30 @@ export default function ViewStudyGroupDetails() {
   const [displayEmailPopup, setDisplayEmailPopup] = useState(false);
   // Sets pop up to send a message
   const [displayMessagePopup, setDisplayMessagePopup] = useState(false);
+  const [messageText, setMessageText] = useState("");
+
   // Sets to select user to send message and the text
-  const [selectedRecipient, setSelectedRecipient] = useState("");
-  const [messageText, setMessageText] = useState(""); 
+  const [selectedRecipient, setSelectedRecipient] = useState<null | {
+    userId: number;
+    name: string;
+    major: string;
+    year: string;
+  }>(null);
+
+  
   const [groupData, setGroupData] = useState<null | {
     name: string;
     course: string;
     imageUrl: string;
     time: string;
     meetinPreference: string;
-    numOfMembers: number;
-    nameOfMembers: string[];
-    memberMajors: string[];
-    memberYears: string[];
+    numOfMembers: number; 
+    members: {
+      userId: number;
+      name: string;
+      major: string;
+      year: string;
+    }[];
   }>(null);
 
   useEffect(() => {
@@ -68,11 +79,14 @@ export default function ViewStudyGroupDetails() {
         
         console.log("Fetched group data:", data.studyGroup);
         console.log("Was able to fetch data");
+        
 
         //stores group data
         const group = data.studyGroup;
         const isoTime = group.meetingTime?.slice(11, 16) || "18:00";
-        const members = group.nameOfMembers ?? [];
+        const members = group.members ?? []      
+        console.log("This is members Members:", group.members); 
+        console.log((group.members || []).length,);        //const numOfMembers = members.length;
 
         setGroupData({
           name: group.groupName,
@@ -80,32 +94,73 @@ export default function ViewStudyGroupDetails() {
           imageUrl: "/assets/default-group.png",
           time: isoTime,
           meetinPreference: group.meetingType === "VIRTUAL" ? "zoom" : "in person",
-          numOfMembers:  members.length,
-          nameOfMembers: group.nameOfMembers || [],
-          memberMajors: group.memberMajors || [],
-          memberYears: group.memberYears || [],
+          numOfMembers: (group.members || []).length,
+          members: (group.members || []).map((m: any, i: number) => ({
+            userId: m.userId,                  
+            name: m.name,
+            major: group.memberMajors?.[i] || "Computer Science",
+            year: group.memberYears?.[i] || "Freshman"
+          }))
+          
         });
+        
       })
       .catch((error) => {
         console.error("Failed to load group data:", error.message);
       });
   }, []);
 
-  const handleSendMessageClick = (name: string) => {
-    setSelectedRecipient(name);
+  const handleSendMessageClick = (member: {
+    userId: number;
+    name: string;
+    major: string;
+    year: string;
+  }) => {
+    setSelectedRecipient(member);
     setDisplayMessagePopup(true);
   };
 
   const handleSendMessage = () => {
-    // Handle the actual message send here (e.g., API call)
-    console.log("Message sent to:", selectedRecipient);
-    console.log("Message:", messageText);
+    if (!selectedRecipient || !messageText.trim()) {
+      console.warn("No recipient or message text");
+      return;
+    }
+  
+    const messagePayload = {
+      senderId: 1, // or get from context/state
+      recipientId: selectedRecipient.userId,
+      messageBody: messageText,
+    };
+  
+    fetch("http://localhost:8080/api/messages/dm", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(messagePayload)
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to send message");
+        }
+        return response.text();
+      })
+      .then((data) => {
+        console.log("Message sent:", data);
+        setDisplayMessagePopup(false);
+        setMessageText("");
+        setSelectedRecipient(null);
+        alert("Message sent");
 
-    // Reset popup
-    setDisplayMessagePopup(false);
-    setMessageText("");
-    setSelectedRecipient("");
+      })
+      .catch((error) => {
+        alert("Message could not be sent: " + error.message);
+        console.error("Error sending message:", error.message);
+      });
   };
+  
+  
+
 
   if (!groupData) {
     return <div>Loading group data...</div>;
@@ -226,13 +281,15 @@ export default function ViewStudyGroupDetails() {
         <div className="group-members-container">
           <b style={{ fontSize: "24px" }}>Group Members</b><br /><br />
           <div>
-            {groupData.nameOfMembers.map((name, idx) => (
+          
+          {groupData.members.map((member, idx) => (
               <div className="member-row" key={idx}>
                 {/* Member name */}
-                <div className="name-col">{name}</div>
+                {/* <div className="name-col">{member.userId}</div> */}
+                <div className="name-col">{member.name}</div>
                 <div className='student-cont'>
-                  <div className="major-col">{groupData.memberMajors[idx]}</div>
-                  <div className="year-col">{groupData.memberYears[idx]}</div>
+                  <div className="major-col">{member.major}</div>
+                  <div className="year-col">{member.year}</div>
                 </div>
                 {/* Sets button to allow to send message to user */}
                 <div className="name-col">
@@ -240,22 +297,25 @@ export default function ViewStudyGroupDetails() {
                     style={{ color: "black", justifyContent: "center", width: "200px", height: "40px"}}
                     type="button"
                     className="choice-button"
-                    onClick={() => handleSendMessageClick(name)}
+                    onClick={() => handleSendMessageClick(member)}
                   >
                     Send message
                   </button>
                 </div>
               </div>
             ))}
+
+
           </div>
         </div>
       </div>
 
       {/* Message popup - moved outside the member mapping */}
+      {/* TODO: Connect to Backend to send messages */}
       {displayMessagePopup && (
         <div className="popup-container">
           <div className="popup-input">
-            <label htmlFor="message-text"><b>Send Message to {selectedRecipient}</b></label>
+          <label htmlFor="message-text"><b>Send Message to {selectedRecipient?.name}</b></label>
             <textarea
               className="message-text"
               id="message-text"

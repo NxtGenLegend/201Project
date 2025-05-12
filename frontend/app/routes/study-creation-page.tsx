@@ -1,6 +1,5 @@
 import React, { Suspense, useState } from 'react';
 import "app/styles/study-creation-page.css";
-import "app/styles/view-group-details.css";
 
 const CountNavigationBar = React.lazy(() => import('../components/Header/Header'));
 
@@ -12,9 +11,6 @@ export default function StudyCreationForm() {
   const [meetingDate, setMeetingDate] = useState("");
   const [meetingStartTime, setMeetingStartTime] = useState("");
   const [location, setLocation] = useState("");
-
-  const [inviteEmail, setInviteEmail] = useState("");
-
 
   //TODO: Need to update adminId to cookies, email
   const adminId = 1; 
@@ -45,7 +41,7 @@ export default function StudyCreationForm() {
 
     //Sends Request body to backend
     try {
-      const response = await fetch("http://localhost:8080/studygroup/create", {
+      const response = await fetch("studygroup/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -56,45 +52,14 @@ export default function StudyCreationForm() {
       const result = await response.json();
 
       if (result.success) {
-        alert("Study group sucessfully created Group ID: " + result.groupID);
-
-    // Invite classmate by userId provided
-    if (inviteEmail) {
-      try {
-        const inviteRes = await fetch(
-          `http://localhost:8080/api/invitations?creatorId=${adminId}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              groupId: result.groupID,
-              recipientId: parseInt(inviteEmail)  
-            })
-          }
-        );
-
-        const inviteData = await inviteRes.json();
-
-        if (inviteRes.ok) {
-          alert("Invitation sent successfully.");
-        } else {
-          alert("Failed to send invitation: " + inviteData.error);
-        }
-      } catch (error) {
-        console.error("Error sending invitation:", error);
-        alert("Error sending invitation.");
+        alert("Study group created with Group ID: " + result.groupID);
+      } else {
+        alert("Failed to create group: " + result.message);
       }
+    } catch (error) {
+      alert("Could not submit the form. Please try again.");
+      console.error("Error submitting form:", error);
     }
-    } else {
-      alert("Failed to create group: " + result.message);
-    }
-
-  } catch (error) {
-    alert("Could not submit the form. Please try again.");
-    console.error("Error submitting form:", error);
-  }
   }
 
   return (
@@ -159,22 +124,20 @@ export default function StudyCreationForm() {
                 id="privacy-settings"
                 style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}
               >
-              <button
-                type="button"
-                className={`choice-button ${privacy === "PRIVATE" ? "selected-button" : ""}`}
-                onClick={() => setPrivacy(privacy === "PRIVATE" ? "" : "PRIVATE")}
-              >
-                Private
-              </button>
-
-              <button
-                type="button"
-                className={`choice-button ${privacy === "PUBLIC" ? "selected-button" : ""}`}
-                onClick={() => setPrivacy(privacy === "PUBLIC" ? "" : "PUBLIC")}
-              >
-                Public
-              </button>
-
+                <button
+                  type="button"
+                  className={`choice-button ${privacy === "PRIVATE" ? "selected-button" : ""}`}
+                  onClick={() => setPrivacy("PRIVATE")}
+                >
+                  Private
+                </button>
+                <button
+                  type="button"
+                  className={`choice-button ${privacy === "PUBLIC" ? "selected-button" : ""}`}
+                  onClick={() => setPrivacy("PUBLIC")}
+                >
+                  Public
+                </button>
               </div>
             </div>
             <br />
@@ -194,23 +157,21 @@ export default function StudyCreationForm() {
                 id="meeting-preference"
                 style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}
               >
-              <button
-                type="button"
-                className={`choice-button ${meetingType === "VIRTUAL" ? "selected-button" : ""}`}
-                onClick={() => setMeetingType(meetingType === "VIRTUAL" ? "" : "VIRTUAL")}
-              >
-                Zoom
-              </button>
-
-              <button
-                type="button"
-                className={`choice-button ${meetingType === "IN_PERSON" ? "selected-button" : ""}`}
-                onClick={() => setMeetingType(meetingType === "IN_PERSON" ? "" : "IN_PERSON")}
-              >
-                In-person
-              </button>
-              </div><br/>
-
+                <button
+                  type="button"
+                  className={`choice-button ${meetingType === "VIRTUAL" ? "selected-button" : ""}`}
+                  onClick={() => setMeetingType("VIRTUAL")}
+                >
+                  Zoom
+                </button>
+                <button
+                  type="button"
+                  className={`choice-button ${meetingType === "IN_PERSON" ? "selected-button" : ""}`}
+                  onClick={() => setMeetingType("IN_PERSON")}
+                >
+                  In-person
+                </button>
+              </div><br />
               {/* Select location and Preference buttons */}
               <label htmlFor="meeting-location"><b>Meeting Location</b></label>
               <div
@@ -220,35 +181,31 @@ export default function StudyCreationForm() {
                 <button
                   type="button"
                   className={`choice-button ${location === "Leavy Library" ? "selected-button" : ""}`}
-                  onClick={() => setLocation(location === "Leavy Library" ? "" : "Leavy Library")}
+                  onClick={() => setLocation("Leavy Library")}
                 >
                   Leavy Library
                 </button>
-
                 <button
                   type="button"
                   className={`choice-button ${location === "Student Lounge" ? "selected-button" : ""}`}
-                  onClick={() => setLocation(location === "Student Lounge" ? "" : "Student Lounge")}
+                  onClick={() => setLocation("Student Lounge")}
                 >
                   Student Lounge
                 </button>
-                
                 <button
                   type="button"
                   className={`choice-button ${location === "Class" ? "selected-button" : ""}`}
-                  onClick={() => setLocation(location === "Class" ? "" : "Class")}
+                  onClick={() => setLocation("Class")}
                 >
                   Class
                 </button>
-
                 <button
                   type="button"
                   className={`choice-button ${location === "Doheny Library" ? "selected-button" : ""}`}
-                  onClick={() => setLocation(location === "Doheny Library" ? "" : "Doheny Library")}
+                  onClick={() => setLocation("Doheny Library")}
                 >
                   Doheny Library
                 </button>
-
               </div>
             </div>
             <br />
@@ -275,17 +232,15 @@ export default function StudyCreationForm() {
             </div>
             <br />
 
-            {/* Invite a classmate option */}
+            {/* Invite a classroom option */}
             <div className="form-field">
               <label htmlFor="invite-email"><b>Invite Classmate</b></label>
               <br />
               <input
-                type="text"
+                type="email"
                 id="invite-email"
                 name="invite-email"
-                placeholder="Enter user Id"
-                value={inviteEmail}
-                onChange={(e) => setInviteEmail(e.target.value)}
+                placeholder="Enter email"
               />
             </div>
 
