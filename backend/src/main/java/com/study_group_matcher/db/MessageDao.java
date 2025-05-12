@@ -13,7 +13,7 @@ public class MessageDao {
     }
 
     public void saveMessage(Message msg) throws SQLException {
-        String sql = "INSERT INTO message (sender_id, recipient_id, message_body, timestamp) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Message (sender_id, recipient_id, message_body, timestamp) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, msg.getSenderId());
             stmt.setInt(2, msg.getRecipientId());
@@ -25,7 +25,7 @@ public class MessageDao {
 
     public List<Message> getConversation(int userA, int userB) throws SQLException {
         String sql = """
-            SELECT * FROM message
+            SELECT * FROM Message
             WHERE (sender_id = ? AND recipient_id = ?) OR (sender_id = ? AND recipient_id = ?)
             ORDER BY timestamp
             """;
