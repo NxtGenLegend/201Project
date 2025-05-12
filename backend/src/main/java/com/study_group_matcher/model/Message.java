@@ -1,13 +1,18 @@
 package com.study_group_matcher.model;
 
-import java.time.LocalDateTime;  
+import java.time.LocalDateTime;
+ 
 public class Message {
     private int messageId;
     private int senderId;
     private int recipientId; // nullable for group messages
     private String messageBody;
     private LocalDateTime timestamp;
-
+    
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
+    public Message() {}; 
     // Constructor for inserting a new message
     public Message(int senderId, int recipientId, String messageBody) {
         this.senderId = senderId;
