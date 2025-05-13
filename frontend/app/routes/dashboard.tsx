@@ -39,7 +39,7 @@ const Dashboard: React.FC = () => {
                             <div className="study-group-cards">
                                 {groups.map((group, index) => (
                                     <GroupCard
-                                        key={index}
+                    
                                         groupName={group.groupName}
                                         course={group.course}
                                         meetingTime={group.meetingTime}

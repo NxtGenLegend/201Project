@@ -1,6 +1,8 @@
 import React from 'react';
 import './GroupCard.css';
 import { FiCalendar, FiMapPin, FiUser } from 'react-icons/fi';
+import { useNavigate, useLocation } from 'react-router-dom';
+
 import groupImage from '../../../public/assets/default_group.png'
 
 interface GroupCardProps {
@@ -20,6 +22,11 @@ const GroupCard: React.FC<GroupCardProps> = ({
   location,
   privacy
 }) => {
+
+  //Components to reroute to a view details page when clicked
+  const navigate = useNavigate();
+  const locationData = useLocation();
+  const currentPath = locationData.pathname;
   return (
     <div className="group-card">
       <img src={groupImage} alt={groupName} className="group-image" />
@@ -45,7 +52,13 @@ const GroupCard: React.FC<GroupCardProps> = ({
 
         <div className="group-footer">
           {/* <span className="created-by">Created by {}</span> */}
-          <button className="explore-button">Explore</button>
+          {/* When clicked, user is able to view the metadata page of the group selected */}
+          <button
+            className={`explore-button ${currentPath === '/' ? 'selected' : ''}`}
+            onClick={() => navigate('/')}
+          >
+            Explore
+          </button>
         </div>
       </div>
     </div>

@@ -8,19 +8,29 @@ const CountNavigationBar = React.lazy(() => import('../components/Header/Header'
 function formatTime(timeStr: string) {
   const [hours, minutes] = timeStr.split(':');
   const date = new Date();
-  
   date.setHours(parseInt(hours), parseInt(minutes));
-
   return date.toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: '2-digit',
     hour12: true
   });
 }
-
+//Helper fucntion to call API endpoint to convert a username to a userId
+export async function getUserIdByUsername(username: string): Promise<number | null> {
+  try {
+    const response = await fetch(`http://localhost:8080/api/users/by-username?username=${encodeURIComponent(username)}`);
+    if (!response.ok) throw new Error("User not found");
+    const userId = await response.json();
+    console.log("This is the userId found: " + userId); 
+    return userId;
+  } catch (error) {
+    console.error("Failed to fetch user ID:", error);
+    return null;
+  }
+}
 export default function ViewStudyGroupDetails() {
-  // Dummy Data
-
+  
+  const [adminId, setAdminId] = useState<number | null>(null);
   // Tracks selected Button to bold choice
   const [selectedAction, setSelectedAction] = useState("");
   // Sets email to send a request to join the group
@@ -31,6 +41,18 @@ export default function ViewStudyGroupDetails() {
   const [displayMessagePopup, setDisplayMessagePopup] = useState(false);
   const [messageText, setMessageText] = useState("");
 
+  const [inviteEmail, setInviteEmail] = useState("");
+  //const adminId = 1; // Replace with actual user from context/session
+
+  //Checks if the user is logged in
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const loggedIn = localStorage.getItem("isLoggedIn") === "true";
+      setIsLoggedIn(loggedIn);
+    }
+  }, []);
+
   // Sets to select user to send message and the text
   const [selectedRecipient, setSelectedRecipient] = useState<null | {
     userId: number;
@@ -39,7 +61,6 @@ export default function ViewStudyGroupDetails() {
     year: string;
   }>(null);
 
-  
   const [groupData, setGroupData] = useState<null | {
     name: string;
     course: string;
@@ -47,6 +68,7 @@ export default function ViewStudyGroupDetails() {
     time: string;
     meetinPreference: string;
     numOfMembers: number; 
+    adminId: number; 
     members: {
       userId: number;
       name: string;
@@ -56,37 +78,29 @@ export default function ViewStudyGroupDetails() {
   }>(null);
 
   useEffect(() => {
-    const groupId = new URLSearchParams(window.location.search).get("id"); console.log("Group ID from URL:", groupId);
+    const fetchGroupData = async () => {
+      const groupId = new URLSearchParams(window.location.search).get("id"); 
+      console.log("Group ID from URL:", groupId);
 
-    //Connect to backend to fetch data
-    if (!groupId) {
-      console.error("No group ID found in URL");
-      return;
-    }
-    //Makes backend API call
-    fetch(`http://localhost:8080/studygroup/${groupId}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch group data");
-        }
-        return response.json();
-      })
-      .then((data) => {
+      //Connect to backend to fetch data
+      if (!groupId) {
+        console.error("No group ID found in URL");
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://localhost:8080/studygroup/${groupId}`);
+        const data = await response.json();
+
         if (!data.success) {
           console.error("Backend error:", data.message);
           return;
         }
-        
-        console.log("Fetched group data:", data.studyGroup);
-        console.log("Was able to fetch data");
-        
 
-        //stores group data
+        console.log("Fetched group data:", data.studyGroup);
         const group = data.studyGroup;
         const isoTime = group.meetingTime?.slice(11, 16) || "18:00";
-        const members = group.members ?? []      
-        console.log("This is members Members:", group.members); 
-        console.log((group.members || []).length,);        //const numOfMembers = members.length;
+        const members = group.members ?? []
 
         setGroupData({
           name: group.groupName,
@@ -95,19 +109,23 @@ export default function ViewStudyGroupDetails() {
           time: isoTime,
           meetinPreference: group.meetingType === "VIRTUAL" ? "zoom" : "in person",
           numOfMembers: (group.members || []).length,
+          adminId: group.adminID,
           members: (group.members || []).map((m: any, i: number) => ({
-            userId: m.userId,                  
+            userId: m.userId,
             name: m.name,
             major: group.memberMajors?.[i] || "Computer Science",
             year: group.memberYears?.[i] || "Freshman"
           }))
-          
         });
-        
-      })
-      .catch((error) => {
-        console.error("Failed to load group data:", error.message);
-      });
+
+        setAdminId(group.adminID); 
+
+      } catch (error) {
+        console.error("Failed to load group data:", error);
+      }
+    };
+
+    fetchGroupData();
   }, []);
 
   const handleSendMessageClick = (member: {
@@ -158,10 +176,99 @@ export default function ViewStudyGroupDetails() {
         console.error("Error sending message:", error.message);
       });
   };
+
+  const handleRequestToJoin = async () => {
+  const groupId = new URLSearchParams(window.location.search).get("id");
+  const userName = localStorage.getItem("username"); // or wherever you store the logged-in user ID
+
+  if (userName === null) {
+    alert("User not found");
+    return;
+  }
+
+  const userId = await getUserIdByUsername(userName );
+
+  if (userId === null) {
+    alert("Could not find user ID for username: " + userName);
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://localhost:8080/api/users/${groupId}/join-request?userId=${userId}`, {
+      method: "POST",
+    });
+
+    const message = await response.text();
+    if (response.ok) {
+      alert("Join request submitted.");
+    } else {
+      alert("Error submitting request: " + message);
+    }
+
+    
+    if (!adminId) {
+      console.error("No admin found for this group.");
+      alert("Error finding admin for this group. Please try this request again later.")
+      return;
+    }
+
+    //Send auto message to admin
+    const autoMessage = `User ${userName} (ID: ${userId}) has requested to join your group.`;
+    await fetch("http://localhost:8080/api/messages/dm", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        senderId: userId,
+        recipientId: adminId,
+        messageBody: autoMessage,
+      }),
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to send message to admin. Status: ${response.status}. Message: ${errorText}`);
+    }
+    console.log("Automated message sent to admin: " + adminId);
+
+  } catch (error) {
+    console.error("Error submitting join request:", error);
+    alert("Something went wrong while submitting join request.");
+  }
+};
+
+  const handleSendInvite = async () => {
+    const groupId = new URLSearchParams(window.location.search).get("id");
+    const adminId = 1; // TODO: replace with logged-in admin ID
+  
+    if ( !groupId) {
+      alert("Missing email or group ID");
+      return;
+    }
+  
+    try {
+      const res = await fetch(`http://localhost:8080/api/invitations?creatorId=${adminId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          groupId: groupId,
+          recipientId: parseInt(inviteEmail) //userId instead of email
+        })
+      });
+  
+      const data = await res.json();
+      if (res.ok) {
+        alert("Invitation sent successfully.");
+        setDisplayEmailPopup(false);
+      } else {
+        alert("Failed to send invitation. "
+          + "Need to be an admin to send invite");
+      }
+    } catch (error) {
+      console.error("Error sending invite:", error);
+      alert("Error sending invitation.");
+    }
+  };
   
   
-
-
   if (!groupData) {
     return <div>Loading group data...</div>;
   }
@@ -178,16 +285,22 @@ export default function ViewStudyGroupDetails() {
           className="group-image"
           src="assets/usc_banner.jpeg"
         />
+
         <div className="group-banner-text">
           <h1><b>{groupData.name}</b></h1>
           <p>{groupData.course}</p>
-          {/* TODO: Update logic so admin can see send request and User can send Request to Join */}
+
           {/* Add Join/Request Button */}
+          {/* Only show send request or request to join if user is logged in */}
+          {isLoggedIn && (
           <div className="group-banner-buttons" style={{ display: "flex", gap: "20px", color: "black", height: "50px" }}>
             <button
               type="button"
               className={`choice-button ${selectedAction === "JOIN" ? "selected-button" : ""}`}
-              onClick={() => setSelectedAction("JOIN")}
+              onClick={() => {
+                setSelectedAction("JOIN");
+                handleRequestToJoin(); // <--- Call backend
+              }}
             >
               Request to Join
             </button>
@@ -202,6 +315,7 @@ export default function ViewStudyGroupDetails() {
               Send Request
             </button>
           </div>
+          )}
         </div>
       </div>
 
@@ -214,11 +328,13 @@ export default function ViewStudyGroupDetails() {
             </b>
             <label htmlFor="invite-email"></label>
             <input
-              type="email"
+              type="number"
               id="invite-email"
               name="invite-email"
-              placeholder="Enter email"
+              placeholder="Enter userId"
               style={{ padding: "8px", width: "100%", marginTop: "10px" }}
+              value={inviteEmail || ''}
+              onChange={(e) => setInviteEmail(e.target.value)}
             /><br></br><br></br>
             {/* Sets cancel or confirm buttons for request popup contsiner */}
             <div className="group-banner-buttons" style={{ display: "flex", gap: "20px", color: "black", justifyContent: "center"}}>
@@ -238,10 +354,7 @@ export default function ViewStudyGroupDetails() {
               <button
                 type="button"
                 className={`choice-button ${selectedAction === "CONFIRM" ? "selected-button" : ""}`}
-                onClick={() => {
-                  setSelectedAction("CONFIRM");
-                  setDisplayEmailPopup(true);
-                }}
+                onClick={handleSendInvite}
               >
                 Confirm
               </button>
@@ -293,14 +406,21 @@ export default function ViewStudyGroupDetails() {
                 </div>
                 {/* Sets button to allow to send message to user */}
                 <div className="name-col">
-                  <button
-                    style={{ color: "black", justifyContent: "center", width: "200px", height: "40px"}}
-                    type="button"
-                    className="choice-button"
-                    onClick={() => handleSendMessageClick(member)}
-                  >
-                    Send message
-                  </button>
+
+
+                {isLoggedIn && (
+                <>
+                <button
+                  style={{ color: "black", justifyContent: "center", width: "200px", height: "40px"}}
+                  type="button"
+                  className="choice-button"
+                  onClick={() => handleSendMessageClick(member)}
+                >
+                  Send message
+                </button>
+                </>
+                )}
+                
                 </div>
               </div>
             ))}

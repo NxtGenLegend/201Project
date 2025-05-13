@@ -6,12 +6,14 @@ import org.springframework.http.ResponseEntity;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
+import org.springframework.http.HttpStatus;
+import java.sql.PreparedStatement;
 import com.study_group_matcher.model.User;
 import com.study_group_matcher.db.JDBCUtil;
 import com.study_group_matcher.db.UserDBHelper;
 
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*") // Optional: allow cross-origin requests from frontend
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -76,6 +78,40 @@ public class UserController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    //API Endpoint to insert users who want to join a study group
+    @PostMapping("/{groupId}/join-request")
+    public ResponseEntity<String> requestToJoinGroup(@PathVariable Long groupId, @RequestParam Long userId) {
+        try (Connection conn = JDBCUtil.getConnection()) {
+            // You can insert a row into a 'JoinRequests' table or send a pending invitation
+            String sql = "INSERT INTO JoinRequests (study_group_id, user_id, status) VALUES (?, ?, 'PENDING')";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setLong(1, groupId);
+                stmt.setLong(2, userId);
+                stmt.executeUpdate();
+            }
+
+            return ResponseEntity.ok("Join request submitted.");
+        } catch (SQLException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error submitting join request: " + e.getMessage());
+        }
+    }
+
+    //API endpoint to get the userID from userName
+    @GetMapping("/by-username")
+    public ResponseEntity<Long> getUserIdByUsername(@RequestParam String username) {
+        try (Connection conn = JDBCUtil.getConnection()) {
+            UserDBHelper userDBHelper = new UserDBHelper(conn);
+            User user = userDBHelper.getUserByUsername(username);
+
+            if (user != null) {
+                return ResponseEntity.ok((long) user.getUserId());
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+        } catch (SQLException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 }
-
-
