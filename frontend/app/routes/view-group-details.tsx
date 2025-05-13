@@ -43,6 +43,9 @@ export default function ViewStudyGroupDetails() {
 
   const [inviteEmail, setInviteEmail] = useState("");
   //const adminId = 1; // Replace with actual user from context/session
+  const [isCurrentUserAdmin, setIsCurrentUserAdmin] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+
 
   //Checks if the user is logged in
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -74,59 +77,63 @@ export default function ViewStudyGroupDetails() {
       name: string;
       major: string;
       year: string;
+      role: string; 
     }[];
   }>(null);
 
   useEffect(() => {
     const fetchGroupData = async () => {
-      const groupId = new URLSearchParams(window.location.search).get("id"); 
-      console.log("Group ID from URL:", groupId);
-
-      //Connect to backend to fetch data
-      if (!groupId) {
-        console.error("No group ID found in URL");
-        return;
-      }
-
+      const groupId = new URLSearchParams(window.location.search).get("id");
+      if (!groupId) return;
+  
       try {
         const response = await fetch(`http://localhost:8080/studygroup/${groupId}`);
         const data = await response.json();
-
-        if (!data.success) {
-          console.error("Backend error:", data.message);
-          return;
-        }
-
-        console.log("Fetched group data:", data.studyGroup);
+  
+        if (!data.success) return;
+  
         const group = data.studyGroup;
-        const isoTime = group.meetingTime?.slice(11, 16) || "18:00";
-        const members = group.members ?? []
-
+        const members = group.members ?? [];
+  
+        const mappedMembers = members.map((m: any, i: number) => ({
+          userId: m.userId,
+          name: m.name,
+          major: group.memberMajors?.[i] || "Computer Science",
+          year: group.memberYears?.[i] || "Freshman",
+          role: m.groupRole || "MEMBER"
+        }));
+  
         setGroupData({
           name: group.groupName,
           course: group.course,
           imageUrl: "/assets/default-group.png",
-          time: isoTime,
+          time: group.meetingTime?.slice(11, 16) || "18:00",
           meetinPreference: group.meetingType === "VIRTUAL" ? "zoom" : "in person",
-          numOfMembers: (group.members || []).length,
+          numOfMembers: mappedMembers.length,
           adminId: group.adminID,
-          members: (group.members || []).map((m: any, i: number) => ({
-            userId: m.userId,
-            name: m.name,
-            major: group.memberMajors?.[i] || "Computer Science",
-            year: group.memberYears?.[i] || "Freshman"
-          }))
+          members: mappedMembers
         });
-
-        setAdminId(group.adminID); 
-
+  
+        setAdminId(group.adminID);
+  
+        const currentUsername = localStorage.getItem("username");
+        const resolvedUserId = await getUserIdByUsername(currentUsername || "");
+        setCurrentUserId(resolvedUserId);
+  
+        const isAdmin = mappedMembers.some(
+          (m: { userId: number | null; role: string; }) => m.userId === resolvedUserId && m.role === "ADMIN"
+        );
+        setIsCurrentUserAdmin(isAdmin);
+  
       } catch (error) {
         console.error("Failed to load group data:", error);
       }
     };
-
+  
     fetchGroupData();
   }, []);
+  
+  
 
   const handleSendMessageClick = (member: {
     userId: number;
@@ -202,40 +209,34 @@ export default function ViewStudyGroupDetails() {
     }
   };
 
-
   const handleSendInvite = async () => {
     const groupId = new URLSearchParams(window.location.search).get("id");
-    const adminId = 1; // TODO: replace with logged-in admin ID
+    const currentUsername = localStorage.getItem("username");
+    const currentUserId = await getUserIdByUsername(currentUsername || "");
   
-    if ( !groupId) {
-      alert("Missing email or group ID");
+    const parsedRecipientId = parseInt(inviteEmail);
+    if (!groupId || isNaN(parsedRecipientId)) {
+      alert("Missing or invalid group ID or recipient user ID.");
       return;
     }
   
     try {
-      const res = await fetch(`http://localhost:8080/api/invitations?creatorId=${adminId}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          groupId: groupId,
-          recipientId: parseInt(inviteEmail) //userId instead of email
-        })
+      const res = await fetch(`http://localhost:8080/api/admin/groups/${groupId}/add-user?userId=${parsedRecipientId}`, {
+        method: "POST"
       });
   
-      const data = await res.json();
+      const responseText = await res.text();
       if (res.ok) {
-        alert("Invitation sent successfully.");
+        alert("User added to group successfully.");
         setDisplayEmailPopup(false);
       } else {
-        alert("Failed to send invitation. "
-          + "Need to be an admin to send invite");
+        alert("Failed to add user to group: " + responseText);
       }
     } catch (error) {
-      console.error("Error sending invite:", error);
-      alert("Error sending invitation.");
+      console.error("Error adding user to group:", error);
+      alert("An unexpected error occurred.");
     }
   };
-  
   
   if (!groupData) {
     return <div>Loading group data...</div>;
@@ -283,7 +284,7 @@ export default function ViewStudyGroupDetails() {
         <div className="popup-container">
           <div className="popup-input">
             <b style={{ justifyContent: "left", display: "flex" }}>
-              Send email to request a user to join
+              Send userId to request a user to join
             </b>
             <label htmlFor="invite-email"></label>
             <input
@@ -367,7 +368,7 @@ export default function ViewStudyGroupDetails() {
                 <div className="name-col">
 
 
-                {isLoggedIn && (
+                {isLoggedIn && isCurrentUserAdmin && (
                 <>
                 <button
                   style={{ color: "black", justifyContent: "center", width: "200px", height: "40px"}}
