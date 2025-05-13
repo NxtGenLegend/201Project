@@ -19,7 +19,8 @@ export default function Login() {
         password: password,
       });
       const data = response.data;
-      if (data.success) {
+      console.log(data);
+      if (data.userId) {
         localStorage.setItem('username', username);
         localStorage.setItem('isLoggedIn', "true");
         window.location.href = '/dashboard';
