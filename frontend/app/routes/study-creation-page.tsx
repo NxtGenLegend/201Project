@@ -3,6 +3,20 @@ import "app/styles/study-creation-page.css";
 
 const CountNavigationBar = React.lazy(() => import('../components/Header/Header'));
 
+//Helper fucntion to call API endpoint to convert a username to a userId
+export async function getUserIdByUsername(username: string): Promise<number | null> {
+  try {
+    const response = await fetch(`http://localhost:8080/api/users/by-username?username=${encodeURIComponent(username)}`);
+    if (!response.ok) throw new Error("User not found");
+    const userId = await response.json();
+    console.log("This is the userId found: " + userId); 
+    return userId;
+  } catch (error) {
+    console.error("Failed to fetch user ID:", error);
+    return null;
+  }
+}
+
 export default function StudyCreationForm() {
   const [groupName, setGroupName] = useState("");
   const [course, setCourse] = useState("");
@@ -13,10 +27,29 @@ export default function StudyCreationForm() {
   const [location, setLocation] = useState("");
   const [inviteEmail, setInviteEmail] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   
-  //TODO: Need to update adminId to cookies, email
-  const adminId = 3;
+  
+  const [adminId, setAdminId] = useState<number | null>(null);
+    
+  useEffect(() => {
+    async function initLoginData() {
+      const loggedIn = localStorage.getItem("isLoggedIn") === "true";
+      setIsLoggedIn(loggedIn);
+  
+      const username = localStorage.getItem("username");
+      if (username) {
+        const userId = await getUserIdByUsername(username);
+        if (userId !== null) {
+          setAdminId(userId);
+        } else {
+          console.error("Could not find userId for username: ", username);
+        }
+      }
+    }
+  
+    initLoginData();
+  }, []);
+
 
   //When user submits form, handles event to send input collected to servlet
   async function handleSubmit(e: { preventDefault: () => void; }) {
@@ -31,6 +64,11 @@ export default function StudyCreationForm() {
       return;
     }
 
+    if (adminId === null) {
+      alert("You must be logged in to create a group.");
+      return;
+    }
+
     //Builds request body for servlet, gathers input from form fields
     const reqBody = {
       adminID: adminId,
@@ -42,13 +80,9 @@ export default function StudyCreationForm() {
       privacy
     };
 
-    useEffect(() => {
-      const loggedIn = localStorage.getItem("isLoggedIn") === "true";
-      setIsLoggedIn(loggedIn);
-    }, []);
     // Sends Request body to backend
     try {
-      const response = await fetch("studygroup/create", {
+      const response = await fetch("http://localhost:8080/studygroup/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -82,6 +116,7 @@ export default function StudyCreationForm() {
 
             if (inviteRes.ok) {
               alert("Invitation sent successfully.");
+              console.log("This is the current Admin ID invite " + adminId); 
             } else {
               alert("Failed to send invitation: " + inviteData.error);
             }
@@ -272,10 +307,10 @@ export default function StudyCreationForm() {
               <label htmlFor="invite-email"><b>Invite Classmate</b></label>
               <br />
               <input
-                type="email"
+                type="number"
                 id="invite-email"
                 name="invite-email"
-                placeholder="Enter email"
+                placeholder="Enter userId"
                 value={inviteEmail || ''}
                 onChange={(e) => setInviteEmail(e.target.value)}
               />
