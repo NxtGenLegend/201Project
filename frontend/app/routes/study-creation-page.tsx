@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import "app/styles/study-creation-page.css";
 
 const CountNavigationBar = React.lazy(() => import('../components/Header/Header'));
@@ -11,18 +11,21 @@ export default function StudyCreationForm() {
   const [meetingDate, setMeetingDate] = useState("");
   const [meetingStartTime, setMeetingStartTime] = useState("");
   const [location, setLocation] = useState("");
+  const [inviteEmail, setInviteEmail] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  
   //TODO: Need to update adminId to cookies, email
-  const adminId = 1; 
+  const adminId = 3;
 
   //When user submits form, handles event to send input collected to servlet
   async function handleSubmit(e: { preventDefault: () => void; }) {
-    e.preventDefault(); 
+    e.preventDefault();
 
     //Sets meeting time in format for backend
     const meetingTime = `${meetingDate}T${meetingStartTime}`;
 
-    //Debug, checks the user collected date and time 
+    //Debug, checks the user collected date and time
     if (!meetingDate || !meetingStartTime) {
       alert("Please select both a date and start time.");
       return;
@@ -30,16 +33,20 @@ export default function StudyCreationForm() {
 
     //Builds request body for servlet, gathers input from form fields
     const reqBody = {
-      adminID: adminId, 
-      groupName, 
-      course, 
-      meetingTime, 
+      adminID: adminId,
+      groupName,
+      course,
+      meetingTime,
       meetingType,
-      location, 
+      location,
       privacy
     };
 
-    //Sends Request body to backend
+    useEffect(() => {
+      const loggedIn = localStorage.getItem("isLoggedIn") === "true";
+      setIsLoggedIn(loggedIn);
+    }, []);
+    // Sends Request body to backend
     try {
       const response = await fetch("studygroup/create", {
         method: "POST",
@@ -52,9 +59,37 @@ export default function StudyCreationForm() {
       const result = await response.json();
 
       if (result.success) {
-        alert("Study group created with Group ID: " + result.groupID);
-      } else {
-        alert("Failed to create group: " + result.message);
+        alert("Study group sucessfully created Group ID: " + result.groupID);
+
+        // Invite classmate by userId provided
+        if (inviteEmail) {
+          try {
+            const inviteRes = await fetch(
+              `http://localhost:8080/api/invitations?creatorId=${adminId}`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                  groupId: result.groupID,
+                  recipientId: parseInt(inviteEmail)
+                })
+              }
+            );
+
+            const inviteData = await inviteRes.json();
+
+            if (inviteRes.ok) {
+              alert("Invitation sent successfully.");
+            } else {
+              alert("Failed to send invitation: " + inviteData.error);
+            }
+          } catch (error) {
+            console.error("Error sending invitation:", error);
+            alert("Error sending invitation.");
+          }
+        }
       }
     } catch (error) {
       alert("Could not submit the form. Please try again.");
@@ -241,6 +276,8 @@ export default function StudyCreationForm() {
                 id="invite-email"
                 name="invite-email"
                 placeholder="Enter email"
+                value={inviteEmail || ''}
+                onChange={(e) => setInviteEmail(e.target.value)}
               />
             </div>
 
@@ -269,6 +306,8 @@ export default function StudyCreationForm() {
             </div>
 
           </div> {/* End of form-container */}
+
+          
         </form>
       </div> {/* End of form-wrapper */}
     </div>
