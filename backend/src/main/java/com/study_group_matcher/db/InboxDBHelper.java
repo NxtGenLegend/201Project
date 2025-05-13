@@ -47,7 +47,7 @@ public class InboxDBHelper {
 
     // Updated to fix dataSource issue and constructor use
     public List<InboxDTO> getAll(String username) {
-        String sql = "SELECT i.message_id, i.invitation_id, sender.username AS sender, " +
+        String sql = "SELECT i.message_id, i.invitation_id, i.user_id, sender.username AS sender, " +
             "m.message_body AS content, m.timestamp AS messageTime, " +
             "inv.study_group_id, sg.group_name AS groupName, inv.created_at AS invitationTime " +
             "FROM Inbox i " +
@@ -71,7 +71,8 @@ public class InboxDBHelper {
                         rs.getString("sender"),  
                         rs.getTimestamp("messageTime"),
                         rs.getString("groupName"),
-                        rs.getTimestamp("invitationTime")
+                        rs.getTimestamp("invitationTime"),
+                        rs.getLong("user_id")
                     );
                     inboxItems.add(dto);
                 }
