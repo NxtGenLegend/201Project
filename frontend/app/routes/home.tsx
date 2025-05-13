@@ -119,23 +119,23 @@ export default function Home() {
         {/* group cards */}
         <div className="group-cards-wrapper">
           <div className="group-cards-container">
-            {/* reroutes user to see details page based on group */}
+            {/* reroutes user to see page */}
             {filteredGroups.map((group, index) => (
               <div
                key={index}
-               //passes group id 
                onClick={() => navigate(`/viewDetails?id=${group.groupID}`)}
                style={{ cursor: "pointer" }}
                 >
               <GroupCard
-                key={index}
-                groupName={group.groupName}
-                course={group.course}
-                meetingTime={group.meetingTime}
-                meetingType={group.meetingType}
-                location={group.location}
-                privacy={group.privacy}
-              />
+                  key={index}
+                  groupName={group.groupName}
+                  course={group.course}
+                  meetingTime={group.meetingTime}
+                  meetingType={group.meetingType}
+                  location={group.location}
+                  privacy={group.privacy} 
+                  groupId={0}              
+                  />
                </div>
             ))}
           </div>

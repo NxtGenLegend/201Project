@@ -94,13 +94,18 @@ public class StudyGroupController {
                 groupData.put("privacy", group.getPrivacy().toString());
 
                 //Searches through list of members, stores members names
-                groupData.put("nameOfMembers", members.stream()
-                    .map(m -> m.getFirstName() + " " + m.getLastName())
-                    .toList());
+                groupData.put("members", members.stream()
+                .map(m -> {
+                    Map<String, Object> userMap = new HashMap<>();
+                    userMap.put("userId", m.getUserId());
+                    userMap.put("name", m.getFirstName() + " " + m.getLastName());
+                    return userMap;
+                })
+                .toList());
 
-                //Placeholder for majors and years 
-                groupData.put("memberMajors", members.stream().map(m -> "Undeclared").toList());
-                groupData.put("memberYears", members.stream().map(m -> "Unknown").toList());
+                //sets majors and years 
+                groupData.put("memberMajors", members.stream().map(m -> "Computer Science").toList());
+                groupData.put("memberYears", members.stream().map(m -> "Senior").toList());
 
                 // Final response
                 response.put("success", true);
