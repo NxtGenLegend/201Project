@@ -5,13 +5,13 @@ import axios from "axios";
 const Header = React.lazy(() => import("../components/Header/Header"));
 
 type Message = {
-  id: number;
-  timestamp: string;
-  subject: string;
   content: string;
+  groupName: string;
+  invitationId: number;
+  invitationTime: string;
+  messageId: number;
+  messageTime: string;
   sender: string;
-  recipient: string;
-  readState: boolean;
 };
 
 export default function Inbox() {
@@ -28,7 +28,7 @@ export default function Inbox() {
         let username = localStorage.getItem('username');
         const response = await axios.get(`http://localhost:8080/api/inbox/by-username/${username}`);
         const data = response.data;
-          // setMessages(data);
+          setMessages(data);
         console.log(data);
         
       } catch (err) {
@@ -41,6 +41,16 @@ export default function Inbox() {
     fetchMessages();
   }, []);
 
+  const joinGroup = async (invitationId: number) => {
+    try {
+      const response = await axios.post(`http://localhost:8080/api/invitations/${invitationId}/accept?userId=${0}`);
+      const data = response.data;
+      console.log(data);   
+    } catch (err) {
+      console.error('error:', err);
+    }
+  };
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <Header />
@@ -48,14 +58,15 @@ export default function Inbox() {
         <div className="inbox-menu">
           <h2>Messages</h2>
           <ul>
-            {messages.map((message) => (
+            {messages.map((message, index) => (
               <li
-                key={message.id}
-                className={`message-item ${message.readState ? "read" : "unread"}`}
+                key={index}
+                className="message-item"
                 onClick={() => handleSelectMessage(message)}
               >
-                <div className="message-subject">{message.subject}</div>
-                <div className="message-timestamp">{message.timestamp}</div>
+                { message.groupName ? <div className="message-subject">Invitation to join {message.groupName} from {message.sender}</div> : <></> }
+                { message.content ? <div className="message-subject">Message from {message.sender}</div> : <></> }
+                <div className="message-timestamp">{message.invitationTime + message.messageTime}</div>
               </li>
             ))}
           </ul>
@@ -63,12 +74,23 @@ export default function Inbox() {
         <div className="inbox-content">
           {selectedMessage ? (
             <div className="message-details">
-              <h3>{selectedMessage.subject}</h3>
-              <p><strong>From:</strong> {selectedMessage.sender}</p>
-              <p><strong>To:</strong> {selectedMessage.recipient}</p>
-              <p><strong>Timestamp:</strong> {selectedMessage.timestamp}</p>
-              <p><strong>Content:</strong></p>
-              <p>{selectedMessage.content}</p>
+              { 
+                selectedMessage.groupName ? 
+                <>
+                  <p><strong>From:</strong> {selectedMessage.sender}</p>
+                  <p><strong>Timestamp:</strong> {selectedMessage.invitationTime}</p>
+                  <p>{selectedMessage.sender} is inviting you to join the study group {selectedMessage.groupName}.</p>
+                  <button onClick={() => joinGroup(selectedMessage.invitationId)} className="inbox-accept-button">Accept</button>
+                </>
+                : <></> }
+              { 
+                selectedMessage.content ? 
+                <>
+                  <p><strong>From:</strong> {selectedMessage.sender}</p>
+                  <p><strong>Timestamp:</strong> {selectedMessage.messageTime}</p>
+                  <p>{selectedMessage.content}</p>
+                </>
+                : <></> }
             </div>
           ) : (
             <div className="no-message-selected">No message is selected, or you have no messages.</div>
