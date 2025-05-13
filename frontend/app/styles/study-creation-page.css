@@ -199,3 +199,8 @@
     color:black; 
     pointer-events: auto !important;
 }
+
+.selected-button {
+    background-color: #000080;
+    color: white !important;
+  }

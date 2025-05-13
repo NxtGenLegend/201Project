@@ -138,102 +138,70 @@ export default function ViewStudyGroupDetails() {
     setDisplayMessagePopup(true);
   };
 
-  const handleSendMessage = () => {
+
+  const handleSendMessage = async () => {
     if (!selectedRecipient || !messageText.trim()) {
       console.warn("No recipient or message text");
       return;
     }
   
-    const messagePayload = {
-      senderId: 1, // or get from context/state
-      recipientId: selectedRecipient.userId,
-      messageBody: messageText,
-    };
-  
-    fetch("http://localhost:8080/api/messages/dm", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(messagePayload)
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to send message");
-        }
-        return response.text();
-      })
-      .then((data) => {
-        console.log("Message sent:", data);
-        setDisplayMessagePopup(false);
-        setMessageText("");
-        setSelectedRecipient(null);
-        alert("Message sent");
-
-      })
-      .catch((error) => {
-        alert("Message could not be sent: " + error.message);
-        console.error("Error sending message:", error.message);
-      });
-  };
-
-  const handleRequestToJoin = async () => {
-  const groupId = new URLSearchParams(window.location.search).get("id");
-  const userName = localStorage.getItem("username"); // or wherever you store the logged-in user ID
-
-  if (userName === null) {
-    alert("User not found");
-    return;
-  }
-
-  const userId = await getUserIdByUsername(userName );
-
-  if (userId === null) {
-    alert("Could not find user ID for username: " + userName);
-    return;
-  }
-
-  try {
-    const response = await fetch(`http://localhost:8080/api/users/${groupId}/join-request?userId=${userId}`, {
-      method: "POST",
-    });
-
-    const message = await response.text();
-    if (response.ok) {
-      alert("Join request submitted.");
-    } else {
-      alert("Error submitting request: " + message);
-    }
-
-    
-    if (!adminId) {
-      console.error("No admin found for this group.");
-      alert("Error finding admin for this group. Please try this request again later.")
+    const senderUsername = localStorage.getItem("username");
+    if (!senderUsername) {
+      alert("You must be logged in to send a message.");
       return;
     }
-
-    //Send auto message to admin
-    const autoMessage = `User ${userName} (ID: ${userId}) has requested to join your group.`;
-    await fetch("http://localhost:8080/api/messages/dm", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        senderId: userId,
-        recipientId: adminId,
-        messageBody: autoMessage,
-      }),
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to send message to admin. Status: ${response.status}. Message: ${errorText}`);
+  
+    const senderId = await getUserIdByUsername(senderUsername);
+    if (!senderId) {
+      alert("Failed to resolve sender ID.");
+      return;
     }
-    console.log("Automated message sent to admin: " + adminId);
+  
+    //Send the message first
+    try {
+      const messageRes = await fetch("http://localhost:8080/api/messages/dm", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          senderId: senderId,
+          recipientId: selectedRecipient.userId,
+          messageBody: messageText
+        })
+      });
+  
+      if (!messageRes.ok) throw new Error("Failed to send message");
+  
+      const messageId = await messageRes.json(); // assuming backend returns messageId
+  
+      // 2. Add message to Inbox for the recipient
+      const inboxRes = await fetch("http://localhost:8080/api/inbox/inbox", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          user_id: selectedRecipient.userId,
+          sender_id: senderId,
+          message_id: messageId,
+          invitation_id: 0  // or null if not applicable
+        })
+      });
+  
+      if (!inboxRes.ok) throw new Error("Failed to add message to inbox");
+  
+      alert("Message sent and added to inbox.");
+      setDisplayMessagePopup(false);
+      setMessageText("");
+      setSelectedRecipient(null);
+  
+    } catch (error) {
+      console.error("Error sending message or adding to inbox:", error);
+      alert("An error occurred. Message may not have been sent.");
+    }
+  };
 
-  } catch (error) {
-    console.error("Error submitting join request:", error);
-    alert("Something went wrong while submitting join request.");
-  }
-};
 
   const handleSendInvite = async () => {
     const groupId = new URLSearchParams(window.location.search).get("id");
@@ -294,16 +262,7 @@ export default function ViewStudyGroupDetails() {
           {/* Only show send request or request to join if user is logged in */}
           {isLoggedIn && (
           <div className="group-banner-buttons" style={{ display: "flex", gap: "20px", color: "black", height: "50px" }}>
-            <button
-              type="button"
-              className={`choice-button ${selectedAction === "JOIN" ? "selected-button" : ""}`}
-              onClick={() => {
-                setSelectedAction("JOIN");
-                handleRequestToJoin(); // <--- Call backend
-              }}
-            >
-              Request to Join
-            </button>
+          
             <button
               type="button"
               className={`choice-button ${selectedAction === "SEND" ? "selected-button" : ""}`}
@@ -312,7 +271,7 @@ export default function ViewStudyGroupDetails() {
                 setDisplayEmailPopup(true);
               }}
             >
-              Send Request
+              Add a user
             </button>
           </div>
           )}
