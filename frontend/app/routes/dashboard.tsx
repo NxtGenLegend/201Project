@@ -1,13 +1,14 @@
 import React, { Suspense, useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/Dashboard.css';
+import { useNavigate } from 'react-router-dom';
 
 const Header = React.lazy(() => import('../components/Header/Header'));
 const GroupCard = React.lazy(() => import('../components/GroupCard/GroupCard'));
 
 const Dashboard: React.FC = () => {
     const [groups, setGroups] = useState<any[]>([]);
-    const userId = 1; // TODO: replace with context or auth ID
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchGroups = async () => {
@@ -36,7 +37,8 @@ const Dashboard: React.FC = () => {
                     <div className="dashboard-content">
                         <div className="study-groups-section">
                             <h2>My Study Groups</h2>
-                            <div className="study-group-cards">
+                            <div className="study-group-cards"
+                            onClick={() => navigate(`/viewDetails?id=1`)}>
                                 {groups.map((group, index) => (
                                     <GroupCard
                     
