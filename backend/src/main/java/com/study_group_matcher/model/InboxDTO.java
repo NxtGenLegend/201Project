@@ -10,8 +10,9 @@ public class InboxDTO {
     private Timestamp messageTime;
     private String groupName;
     private Timestamp invitationTime;
+    private Long user_id;
     
-    public InboxDTO(Long messageId, Long invitationId, String content, String sender, Timestamp messageTime, String groupName, Timestamp invitationTime) {
+    public InboxDTO(Long messageId, Long invitationId, String content, String sender, Timestamp messageTime, String groupName, Timestamp invitationTime, Long user_id) {
         this.messageId = messageId;
         this.invitationId = invitationId;
         this.content = content;
@@ -19,6 +20,7 @@ public class InboxDTO {
         this.messageTime = messageTime;
         this.groupName = groupName;
         this.invitationTime = invitationTime;
+        this.user_id = user_id;
     }
 
     // Getters
@@ -50,6 +52,10 @@ public class InboxDTO {
         return invitationTime;
     }
 
+    public Long getUserId() {
+        return user_id;
+    }
+
     // Setters
     public void setMessageId(Long messageId) {
         this.messageId = messageId;
@@ -77,5 +83,9 @@ public class InboxDTO {
 
     public void setInvitationTime(Timestamp invitationTime) {
         this.invitationTime = invitationTime;
+    }
+
+    public void setUserID(Long user_id) {
+        this.user_id = user_id;
     }
 }
