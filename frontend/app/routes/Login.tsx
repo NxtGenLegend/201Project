@@ -26,10 +26,12 @@ export default function Login() {
       }
     } catch (err) {
       console.error('error:', err);
+      if (axios.isAxiosError(err) && err.message === "Request failed with status code 401") {
+        alert("Invalid username or password");
+      } else {
+        alert("An error occurred during login");
+      }
     }
-    localStorage.setItem('username', username);
-        localStorage.setItem('isLoggedIn', "true");
-        window.location.href = '/dashboard';
   };
 
   return (

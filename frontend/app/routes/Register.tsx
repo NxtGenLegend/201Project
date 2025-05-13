@@ -27,6 +27,11 @@ export default function Register() {
       }
     } catch (err) {
       console.error('error:', err);
+      if (axios.isAxiosError(err) && err.response?.data === "Username already exists") {
+        alert("Username already exists");
+      } else {
+        alert("An error occurred during registration");
+      }
     }
   };
 
