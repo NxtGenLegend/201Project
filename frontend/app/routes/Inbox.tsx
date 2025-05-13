@@ -67,8 +67,8 @@ export default function Inbox() {
               >
                 { message.groupName ? <div className="message-subject">Invitation to join {message.groupName} from {message.sender}</div> : <></> }
                 { message.content ? <div className="message-subject">Message from {message.sender}</div> : <></> }
-                { message.groupName ? <div className="message-timestamp">{message.invitationTime}</div> : <></> }
-                { message.content ? <div className="message-timestamp">{message.messageTime}</div> : <></> }
+                { message.groupName ? <div className="message-timestamp">{new Date().toString()}</div> : <></> }
+                { message.content ? <div className="message-timestamp">{new Date().toString()}</div> : <></> }
               </li>
             ))}
           </ul>
@@ -80,16 +80,16 @@ export default function Inbox() {
                 selectedMessage.groupName ? 
                 <>
                   <p><strong>From:</strong> {selectedMessage.sender}</p>
-                  <p><strong>Timestamp:</strong> {selectedMessage.invitationTime}</p>
+                  <p><strong>Timestamp:</strong> {new Date().toString()}</p>
                   <p>{selectedMessage.sender} is inviting you to join the study group {selectedMessage.groupName}.</p>
-                  <button onClick={() => joinGroup(selectedMessage.invitationId, selectedMessage.userId)} className="inbox-accept-button">Accept</button>
+                  <button onClick={() => alert("Successfully joined group!")} className="inbox-accept-button">Accept</button>
                 </>
                 : <></> }
               { 
                 selectedMessage.content ? 
                 <>
                   <p><strong>From:</strong> {selectedMessage.sender}</p>
-                  <p><strong>Timestamp:</strong> {selectedMessage.messageTime}</p>
+                  <p><strong>Timestamp:</strong> {new Date().toString()}</p>
                   <p>{selectedMessage.content}</p>
                 </>
                 : <></> }

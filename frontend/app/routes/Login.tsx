@@ -23,7 +23,7 @@ export default function Login() {
       if (data.userId) {
         localStorage.setItem('username', username);
         localStorage.setItem('isLoggedIn', "true");
-        window.location.href = '/dashboard';
+        window.location.href = '/';
       }
     } catch (err) {
       console.error('error:', err);

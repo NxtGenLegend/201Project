@@ -69,6 +69,10 @@ public class UserController {
         try (Connection conn = JDBCUtil.getConnection()) {
             UserDBHelper userDBHelper = new UserDBHelper(conn);
             User user = userDBHelper.getUserByUsername(username);
+
+            System.out.println("Provided password: " + password);
+            System.out.println("Stored hash: " + user.getPassword());
+            System.out.println(BCrypt.checkpw(password, user.getPassword()));
             
             if (user != null && BCrypt.checkpw(password, user.getPassword())) {
                 return ResponseEntity.ok(user);
