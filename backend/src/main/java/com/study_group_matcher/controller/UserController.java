@@ -70,7 +70,7 @@ public class UserController {
             UserDBHelper userDBHelper = new UserDBHelper(conn);
             User user = userDBHelper.getUserByUsername(username);
             
-            if (user != null && BCrypt.checkpw(password, user.getPassword())) {
+            if (user != null && password == user.getPassword()) {
                 return ResponseEntity.ok(user);
             }
             return ResponseEntity.status(401).build();
