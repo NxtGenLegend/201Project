@@ -12,6 +12,7 @@ type Message = {
   messageId: number;
   messageTime: string;
   sender: string;
+  userId: number;
 };
 
 export default function Inbox() {
@@ -41,9 +42,9 @@ export default function Inbox() {
     fetchMessages();
   }, []);
 
-  const joinGroup = async (invitationId: number) => {
+  const joinGroup = async (invitationId: number, userId: number) => {
     try {
-      const response = await axios.post(`http://localhost:8080/api/invitations/${invitationId}/accept?userId=${0}`);
+      const response = await axios.post(`http://localhost:8080/api/invitations/${invitationId}/accept?userId=${userId}`);
       const data = response.data;
       console.log(data);   
     } catch (err) {
@@ -66,7 +67,8 @@ export default function Inbox() {
               >
                 { message.groupName ? <div className="message-subject">Invitation to join {message.groupName} from {message.sender}</div> : <></> }
                 { message.content ? <div className="message-subject">Message from {message.sender}</div> : <></> }
-                <div className="message-timestamp">{message.invitationTime + message.messageTime}</div>
+                { message.groupName ? <div className="message-timestamp">{message.invitationTime}</div> : <></> }
+                { message.content ? <div className="message-timestamp">{message.messageTime}</div> : <></> }
               </li>
             ))}
           </ul>
@@ -80,7 +82,7 @@ export default function Inbox() {
                   <p><strong>From:</strong> {selectedMessage.sender}</p>
                   <p><strong>Timestamp:</strong> {selectedMessage.invitationTime}</p>
                   <p>{selectedMessage.sender} is inviting you to join the study group {selectedMessage.groupName}.</p>
-                  <button onClick={() => joinGroup(selectedMessage.invitationId)} className="inbox-accept-button">Accept</button>
+                  <button onClick={() => joinGroup(selectedMessage.invitationId, selectedMessage.userId)} className="inbox-accept-button">Accept</button>
                 </>
                 : <></> }
               { 
